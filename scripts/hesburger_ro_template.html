@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hesburger × Bolt Food — Aug–Sep 2026 · Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#00C07F;--green-d:#008F5E;--green-pale:#E6F9F1;--green-mid:#B3EDD8;
+  --ink:#0B1F16;--ink-m:#2E5040;--ink-l:#6B8F7D;
+  --bg:#F5F8F6;--white:#FFFFFF;--border:#D5E8DC;
+  --red:#D93025;--red-pale:#FDECEA;--red-m:#F28B82;
+  --amber:#E6820A;--amber-pale:#FEF3E2;
+  --blue:#1A73E8;--blue-pale:#E8F0FE;
+  --shadow:0 1px 3px rgba(11,31,22,.07),0 4px 12px rgba(11,31,22,.05);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --green:#00D98F;--green-d:#00C07F;--green-pale:#062214;--green-mid:#0A3D22;
+  --ink:#E0F0E8;--ink-m:#8FBFA8;--ink-l:#4A7A62;
+  --bg:#081410;--white:#0E2018;--border:#1A3828;
+  --red:#FF6B63;--red-pale:#2A0D0A;--amber:#FBBF24;--amber-pale:#1F1400;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55}
+
+/* ── NAV ── */
+.topnav{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:2px;overflow-x:auto;scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topnav-brand{font-family:'DM Serif Display',serif;font-size:15px;white-space:nowrap;padding:13px 16px 13px 0;border-right:1px solid var(--border);margin-right:6px;flex-shrink:0}
+.topnav a{font-size:11px;font-weight:600;color:var(--ink-l);text-decoration:none;white-space:nowrap;padding:13px 10px;transition:color .15s;flex-shrink:0}
+.topnav a:hover,.topnav a.active{color:var(--green-d)}
+
+/* ── HERO ── */
+.hero{background:#0B1F16;color:#fff;padding:60px 28px 52px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,192,127,.15),transparent 68%);pointer-events:none}
+.hero-pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7DFFC8;border:1px solid rgba(125,255,200,.45);border-radius:99px;padding:4px 12px;margin-bottom:16px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,5vw,52px);line-height:1.08;color:#fff;margin-bottom:10px}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.88);margin-bottom:48px;max-width:720px}
+
+.tab-bar{display:flex;gap:4px;margin-bottom:28px}
+.tab{padding:7px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.9);background:transparent;transition:all .2s}
+.tab.active{background:#00C07F;color:#062214;border-color:#00C07F}
+
+.hero-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden}
+.hero-kpi{background:rgba(255,255,255,.05);padding:20px 18px}
+.hero-kpi-v{font-family:'DM Serif Display',serif;font-size:26px;color:#fff;line-height:1;margin-bottom:5px}
+.hero-kpi-l{font-size:11px;color:rgba(255,255,255,.82);font-weight:600;margin-bottom:3px}
+.hero-kpi-d{font-size:11px;font-weight:700}
+.up{color:#7DFFC8}.dn{color:#FFB4AE}.neu{color:rgba(255,255,255,.82)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+.section{padding:52px 0}
+.section+.section{padding-top:0}
+.sec-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:4px}
+.sec-sub{font-size:12px;color:var(--ink-l);margin-bottom:26px}
+.divider{border:none;border-top:1px solid var(--border);margin:0 28px}
+
+/* ── CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.kcard{background:var(--white);border:1px solid var(--border);border-radius:11px;padding:16px;box-shadow:var(--shadow)}
+.kcard-v{font-family:'DM Serif Display',serif;font-size:24px;line-height:1;margin-bottom:4px}
+.kcard-l{font-size:10px;color:var(--ink-l);font-weight:500;margin-bottom:3px}
+.kcard-d{font-size:10px;font-weight:600}
+.kup{color:var(--green-d)}.kdn{color:var(--red)}.kneu{color:var(--ink-l)}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:11px;border:1px solid var(--border);margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--white)}
+thead th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;color:var(--ink-l);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg)}
+tbody td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--ink);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--bg)}
+.bold{font-weight:700}.tg{color:var(--green-d);font-weight:700}.tr{color:var(--red);font-weight:700}.ta{color:var(--amber);font-weight:700}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700}
+.bg{background:var(--green-pale);color:var(--green-d)}.br{background:var(--red-pale);color:var(--red)}.ba{background:var(--amber-pale);color:var(--amber)}.bb{background:var(--blue-pale);color:var(--blue)}
+
+/* ── CHARTS ── */
+.chart-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:680px){.chart-2{grid-template-columns:1fr}}
+.chart-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:780px){.chart-3{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.chart-3{grid-template-columns:1fr}}
+.ccard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.ccard-t{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:16px}
+
+/* bar chart */
+.bars{display:flex;flex-direction:column;gap:7px}
+.br-row{display:flex;align-items:center;gap:8px}
+.br-lbl{font-size:11px;color:var(--ink-m);width:130px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.br-fill{height:100%;border-radius:4px;background:var(--green)}
+.br-val{font-size:11px;font-weight:700;color:var(--ink);width:44px;text-align:right;flex-shrink:0}
+
+/* donut */
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.dl-row{display:flex;align-items:center;gap:7px;font-size:11px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:3px}
+.fn-step{display:flex;align-items:center;gap:10px}
+.fn-lbl{font-size:11px;color:var(--ink-m);width:130px;flex-shrink:0;text-align:right}
+.fn-bar-w{flex:1}
+.fn-outer{background:var(--bg);border-radius:4px;height:26px;overflow:hidden}
+.fn-inner{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px}
+.fn-inner span{font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+.fn-val{font-size:11px;font-weight:700;color:var(--ink);width:64px;text-align:right;flex-shrink:0}
+.fn-arrow{text-align:center;font-size:10px;color:var(--ink-l);padding:1px 0 1px 140px}
+
+/* insight box */
+.insight{background:var(--green-pale);border:1px solid rgba(0,192,127,.18);border-radius:10px;padding:15px;font-size:12.5px;color:var(--ink-m);line-height:1.6;margin-top:14px}
+.insight strong{color:var(--ink)}
+.alert{background:var(--red-pale);border:1px solid rgba(217,48,37,.18);border-radius:10px;padding:15px;font-size:12.5px;color:var(--ink-m);line-height:1.6;margin-top:14px}
+.alert strong{color:var(--red)}
+.tip{background:var(--blue-pale);border:1px solid rgba(26,115,232,.18);border-radius:10px;padding:15px;font-size:12.5px;color:var(--ink-m);line-height:1.6;margin-top:14px}
+.tip strong{color:var(--blue)}
+
+/* loc grid */
+.loc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.lcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+.lcard-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.lname{font-weight:700;font-size:13.5px;line-height:1.3}
+.lcity{font-size:10px;color:var(--ink-l);margin-top:2px}
+.lrating{font-family:'DM Serif Display',serif;font-size:18px}
+.lstars{font-size:10px;color:var(--amber)}
+.lmetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:11px}
+.lm{text-align:center}
+.lm-v{font-weight:700;font-size:14px}
+.lm-l{font-size:9px;color:var(--ink-l);margin-top:1px}
+.ltag{font-size:10px;font-weight:600}
+
+/* offer card */
+.offer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.ocard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);position:relative}
+.otag{position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;padding:3px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.07em}
+.otag-rec{background:var(--green);color:#fff}
+.otag-opt{background:var(--bg);color:var(--ink-l);border:1px solid var(--border)}
+.o-pct{font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink);line-height:1;margin-bottom:6px}
+.o-title{font-weight:700;font-size:13px;margin-bottom:8px}
+.o-body{font-size:11.5px;color:var(--ink-m);line-height:1.55}
+.o-cost{margin-top:10px;font-size:11px;font-weight:600;color:var(--green-d)}
+
+/* SL card */
+.sl-card{background:var(--white);border:2px solid var(--green);border-radius:12px;padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.sl-name{font-weight:700;font-size:13px}
+.sl-meta{font-size:11px;color:var(--ink-l)}
+.sl-imp{font-size:12px;color:var(--ink-m)}
+.sl-cost{font-size:12px;font-weight:700;color:var(--green-d)}
+.sl-priority{display:inline-block;margin-top:4px}
+
+/* month compare pill */
+.compare-pill{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--ink-m)}
+
+/* tab panel */
+.month-panel{display:none}.month-panel.show{display:block}
+
+/* footer */
+.footer{text-align:center;padding:36px 28px;font-size:11px;color:var(--ink-l);border-top:1px solid var(--border);margin-top:40px}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-brand">Hesburger × Bolt Food · RO</div>
+  <a href="#weekly">Weekly</a>
+  <a href="#overview">Overview</a>
+  <a href="#cancellations">Cancellations</a>
+  <a href="#monthly">Monthly</a>
+  <a href="#promo">Promo</a>
+  <a href="#dishes">Top dishes</a>
+  <a href="#availability">Availability</a>
+  <a href="#funnel">Funnel</a>
+  <a href="#boltplus">Bolt+</a>
+  <a href="#ratings">Rating</a>
+  <a href="#refunds">Refunds</a>
+  <a href="#sponsored">Sponsored Listing</a>
+  <a href="#locations">Locations</a>
+</nav>
+
+<div class="hero" id="hero">
+  <div class="wrap">
+    <div class="hero-pill">Bolt Food Romania · Partner Analytics</div>
+    <h1>Hesburger × Bolt Food<br>Performance Report</h1>
+    <p class="hero-sub">12 locations · Bucharest, Galați, Craiova, Buzău, Râmnicu Vâlcea, Brăila, Iași, Pitești · Aug–Sep 2026 · Generated on 20 October 2026</p>
+    <div class="tab-bar">
+      <button class="tab active" onclick="showMonth('jul')">August 2026</button>
+      <button class="tab" onclick="showMonth('aug')">September 2026</button>
+      <button class="tab" onclick="showMonth('mtd')">Oct TD</button>
+    </div>
+    
+    <div class="hero-kpis" id="h-jul">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">3,249</div><div class="hero-kpi-d up">▲22.7% vs Jul</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">45,866 €</div><div class="hero-kpi-d up">▲24.9% vs Jul</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">14.12 €</div><div class="hero-kpi-d up">▲1.7% vs Jul</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">75.4%</div><div class="hero-kpi-d neu">—</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.33 ★</div><div class="hero-kpi-d neu">12 locations</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Aug</div><div class="hero-kpi-v">23,839</div><div class="hero-kpi-d neu">343,175 €</div></div>
+    </div>
+    
+    <div class="hero-kpis" id="h-aug" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">4,256</div><div class="hero-kpi-d up">▲31.0% vs Aug</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">58,401 €</div><div class="hero-kpi-d up">▲27.3% vs Aug</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.72 €</div><div class="hero-kpi-d dn">▼2.8% vs Aug</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">82.3%</div><div class="hero-kpi-d up">▲6.9pp vs Aug</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.33 ★</div><div class="hero-kpi-d dn">▼0.01 vs Aug</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Sep</div><div class="hero-kpi-v">28,095</div><div class="hero-kpi-d neu">401,575 €</div></div>
+    </div>
+    
+    <div class="hero-kpis" id="h-mtd" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">2,524</div><div class="hero-kpi-d up">▲1.9% vs 1–19 Sep</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">33,856 €</div><div class="hero-kpi-d dn">▼1.5% vs 1–19 Sep</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.41 €</div><div class="hero-kpi-d dn">▼3.3% vs 1–19 Sep</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">78.2%</div><div class="hero-kpi-d dn">▼4.0pp vs 1–19 Sep</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.29 ★</div><div class="hero-kpi-d dn">▼0.08 vs 1–19 Sep</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–19 Oct</div><div class="hero-kpi-v">30,619</div><div class="hero-kpi-d neu">435,432 €</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="weekly"></div>
+<div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Weekly report — 12–18 Oct 2026</p>
+  <p class="sec-sub">Network summary and every location · vs 5–11 Oct 2026 · refreshes every Monday at 13:00</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Delivered</div><div class="kcard-v">972</div><div class="kcard-d kdn">▼10.8% vs prior week</div></div>
+    <div class="kcard"><div class="kcard-l">Revenue</div><div class="kcard-v">12,942 €</div><div class="kcard-d kdn">▼11.5% vs prior week</div></div>
+    <div class="kcard"><div class="kcard-l">AOV</div><div class="kcard-v">13.32 €</div><div class="kcard-d kdn">▼0.8%</div></div>
+    <div class="kcard"><div class="kcard-l">Chain rating</div><div class="kcard-v">4.22 ★</div><div class="kcard-d kdn">▼0.16 vs prior week</div></div>
+    <div class="kcard"><div class="kcard-l">Fail rate</div><div class="kcard-v">1.0%</div><div class="kcard-d kneu">10 failed</div></div>
+    <div class="kcard"><div class="kcard-l">Locations</div><div class="kcard-v">12</div><div class="kcard-d kneu">with delivered orders</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>City</th>
+        <th>Delivered prior</th><th>Delivered</th><th>WoW</th>
+        <th>Revenue €</th><th>AOV €</th><th>Promo%</th>
+        <th>Bolt+</th><th>Failed</th><th>Rating ★</th><th>Bad%</th><th>Good%</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Buzau Shopping City Mall</td><td>Buzău</td><td>207</td><td class="bold">220</td><td class="tg">▲6.3%</td><td>2,681</td><td>12.19</td><td>85.9%</td><td>9</td><td>4</td><td>4.27</td><td>5.3%</td><td>20.7%</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>Rm. Vâlcea</td><td>135</td><td class="bold">136</td><td class="tg">▲0.7%</td><td>1,667</td><td>12.25</td><td>91.2%</td><td>7</td><td>1</td><td>4.75</td><td>2.1%</td><td>22.6%</td></tr><tr><td class="bold">Craiova Electroputere</td><td>Craiova</td><td>161</td><td class="bold">127</td><td class="tr">▼21.1%</td><td>1,603</td><td>12.62</td><td>51.2%</td><td>9</td><td>0</td><td>4.23</td><td>6.9%</td><td>22.9%</td></tr><tr><td class="bold">Galati Cosbuc</td><td>Galați</td><td>145</td><td class="bold">118</td><td class="tr">▼18.6%</td><td>1,743</td><td>14.77</td><td>94.1%</td><td>9</td><td>2</td><td>4.15</td><td>6.1%</td><td>19.8%</td></tr><tr><td class="bold">Afi Cotroceni</td><td>Bucharest</td><td>105</td><td class="bold">91</td><td class="tr">▼13.3%</td><td>1,351</td><td>14.84</td><td>69.2%</td><td>32</td><td>0</td><td>4.18</td><td>8.8%</td><td>27.5%</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>Brăila</td><td>79</td><td class="bold">71</td><td class="tr">▼10.1%</td><td>821</td><td>11.57</td><td>87.3%</td><td>9</td><td>1</td><td>4.88</td><td>1.3%</td><td>20.8%</td></tr><tr><td class="bold">Mega Mall</td><td>Bucharest</td><td>49</td><td class="bold">45</td><td class="tr">▼8.2%</td><td>620</td><td>13.78</td><td>57.8%</td><td>11</td><td>1</td><td>3.86</td><td>8.5%</td><td>21.3%</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>Iași</td><td>60</td><td class="bold">41</td><td class="tr">▼31.7%</td><td>567</td><td>13.82</td><td>53.7%</td><td>8</td><td>0</td><td>3.93</td><td>8.9%</td><td>24.4%</td></tr><tr><td class="bold">Cosmopolis</td><td>Bucharest</td><td>41</td><td class="bold">37</td><td class="tr">▼9.8%</td><td>498</td><td>13.45</td><td>43.2%</td><td>2</td><td>1</td><td>4.00</td><td>7.1%</td><td>19.0%</td></tr><tr><td class="bold">Baneasa Mall</td><td>Bucharest</td><td>35</td><td class="bold">32</td><td class="tr">▼8.6%</td><td>587</td><td>18.34</td><td>62.5%</td><td>11</td><td>0</td><td>3.69</td><td>12.9%</td><td>29.0%</td></tr><tr><td class="bold">Promenada Mall</td><td>Bucharest</td><td>36</td><td class="bold">30</td><td class="tr">▼16.7%</td><td>481</td><td>16.03</td><td>56.7%</td><td>5</td><td>0</td><td>2.67</td><td>12.1%</td><td>6.1%</td></tr><tr><td class="bold">Pitești Retail Park</td><td>Pitești</td><td>37</td><td class="bold">24</td><td class="tr">▼35.1%</td><td>325</td><td>13.53</td><td>66.7%</td><td>1</td><td>0</td><td>3.29</td><td>12.5%</td><td>16.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div>
+<hr class="divider">
+</div>
+
+
+<div id="overview"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Chain overview</p>
+  <p class="sec-sub">All locations · Aug vs Sep 2026 · completed month, refreshes on the 2nd</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Delivered — Aug</div><div class="kcard-v">3,249</div><div class="kcard-d kup">▲22.7% vs Jul</div></div>
+    <div class="kcard"><div class="kcard-l">Delivered — Sep</div><div class="kcard-v">4,256</div><div class="kcard-d kup">▲31.0% vs Aug</div></div>
+    <div class="kcard"><div class="kcard-l">AOV Aug / Sep</div><div class="kcard-v">14.12 / 13.72 €</div><div class="kcard-d kdn">▼2.8%</div></div>
+    <div class="kcard"><div class="kcard-l">Fail rate Aug / Sep</div><div class="kcard-v">1.0% / 1.2%</div><div class="kcard-d kdn">▲0.2pp</div></div>
+    <div class="kcard"><div class="kcard-l">Bolt+ share Aug / Sep</div><div class="kcard-v">15.0% / 15.5%</div><div class="kcard-d kneu">488 → 660</div></div>
+    <div class="kcard"><div class="kcard-l">YTD delivered Jan–Sep</div><div class="kcard-v">28,095</div><div class="kcard-d kneu">401,575 € YTD</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>City</th>
+        <th>Delivered Aug</th><th>Delivered Sep</th><th>MoM</th>
+        <th>Revenue Aug €</th><th>Revenue Sep €</th>
+        <th>AOV Aug €</th><th>AOV Sep €</th>
+        <th>Promo% Aug</th><th>Promo% Sep</th>
+        <th>Bolt+ Aug</th><th>Bolt+ Sep</th>
+        <th>Failed Aug</th><th>Failed Sep</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Buzau Shopping City Mall</td><td>Buzău</td><td>490</td><td class="bold">682</td><td class="tg">▲39.2%</td><td>6,294</td><td>8,253</td><td>12.84</td><td>12.10</td><td>91.2%</td><td>88.0%</td><td>31</td><td>28</td><td>4</td><td class="tr">10</td></tr><tr><td class="bold">Craiova Electroputere</td><td>Craiova</td><td>449</td><td class="bold">585</td><td class="tg">▲30.3%</td><td>6,550</td><td>7,454</td><td>14.59</td><td>12.74</td><td>75.9%</td><td>68.2%</td><td>46</td><td>64</td><td>4</td><td class="tr">7</td></tr><tr><td class="bold">Galati Cosbuc</td><td>Galați</td><td>441</td><td class="bold">541</td><td class="tg">▲22.7%</td><td>6,477</td><td>7,971</td><td>14.69</td><td>14.73</td><td>83.9%</td><td>89.8%</td><td>43</td><td>40</td><td>2</td><td class="tr">12</td></tr><tr><td class="bold">Afi Cotroceni</td><td>Bucharest</td><td>363</td><td class="bold">515</td><td class="tg">▲41.9%</td><td>5,731</td><td>8,214</td><td>15.79</td><td>15.95</td><td>51.0%</td><td>79.6%</td><td>110</td><td>192</td><td>0</td><td>2</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>Rm. Vâlcea</td><td>406</td><td class="bold">494</td><td class="tg">▲21.7%</td><td>4,980</td><td>5,893</td><td>12.27</td><td>11.93</td><td>93.6%</td><td>91.3%</td><td>15</td><td>20</td><td>1</td><td>4</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>Brăila</td><td>230</td><td class="bold">312</td><td class="tg">▲35.7%</td><td>3,017</td><td>4,150</td><td>13.12</td><td>13.30</td><td>93.0%</td><td>93.6%</td><td>12</td><td>30</td><td>2</td><td>3</td></tr><tr><td class="bold">Mega Mall</td><td>Bucharest</td><td>255</td><td class="bold">299</td><td class="tg">▲17.3%</td><td>3,987</td><td>4,614</td><td>15.64</td><td>15.43</td><td>59.6%</td><td>75.9%</td><td>91</td><td>93</td><td>3</td><td class="tr">8</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>Iași</td><td>125</td><td class="bold">209</td><td class="tg">▲67.2%</td><td>1,622</td><td>2,693</td><td>12.98</td><td>12.89</td><td>64.0%</td><td>78.9%</td><td>13</td><td>29</td><td>0</td><td>0</td></tr><tr><td class="bold">Promenada Mall</td><td>Bucharest</td><td>134</td><td class="bold">202</td><td class="tg">▲50.7%</td><td>2,086</td><td>2,946</td><td>15.56</td><td>14.59</td><td>56.0%</td><td>76.2%</td><td>44</td><td>80</td><td>1</td><td>1</td></tr><tr><td class="bold">Cosmopolis</td><td>Bucharest</td><td>188</td><td class="bold">179</td><td class="tr">▼4.8%</td><td>2,695</td><td>2,613</td><td>14.34</td><td>14.60</td><td>39.9%</td><td>71.5%</td><td>29</td><td>29</td><td>11</td><td>2</td></tr><tr><td class="bold">Pitești Retail Park</td><td>Pitești</td><td>95</td><td class="bold">134</td><td class="tg">▲41.1%</td><td>1,317</td><td>1,861</td><td>13.86</td><td>13.89</td><td>84.2%</td><td>87.3%</td><td>19</td><td>24</td><td>6</td><td>2</td></tr><tr><td class="bold">Baneasa Mall</td><td>Bucharest</td><td>73</td><td class="bold">104</td><td class="tg">▲42.5%</td><td>1,109</td><td>1,738</td><td>15.20</td><td>16.71</td><td>71.2%</td><td>71.2%</td><td>35</td><td>31</td><td>0</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div>
+
+<hr class="divider">
+
+<div id="cancellations"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Cancellation reasons</p>
+  <p class="sec-sub">Failed orders breakdown by location · Aug &amp; Sep 2026</p>
+  <div class="chart-2">
+    <div class="ccard">
+      <div class="ccard-t">Failed orders — chain total</div>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:16px;">
+        <div class="kcard"><div class="kcard-l">Failed — August</div><div class="kcard-v">34</div><div class="kcard-d kneu">1.0% fail rate</div></div>
+        <div class="kcard"><div class="kcard-l">Failed — September</div><div class="kcard-v">52</div><div class="kcard-d kneu">1.2% fail rate</div></div>
+      </div>
+      <div class="bars">
+        <div class="br-row"><div class="br-lbl">Galati Cosbuc (Sep)</div><div class="br-track"><div class="br-fill" style="width:100%;background:var(--red)"></div></div><div class="br-val tr">12</div></div><div class="br-row"><div class="br-lbl">Cosmopolis (Aug)</div><div class="br-track"><div class="br-fill" style="width:92%;background:var(--amber)"></div></div><div class="br-val ta">11</div></div><div class="br-row"><div class="br-lbl">Buzau Shopping City Mall (Sep)</div><div class="br-track"><div class="br-fill" style="width:83%;background:var(--red)"></div></div><div class="br-val tr">10</div></div><div class="br-row"><div class="br-lbl">Mega Mall (Sep)</div><div class="br-track"><div class="br-fill" style="width:67%;background:var(--red)"></div></div><div class="br-val tr">8</div></div><div class="br-row"><div class="br-lbl">Craiova Electroputere (Sep)</div><div class="br-track"><div class="br-fill" style="width:58%;background:var(--red)"></div></div><div class="br-val tr">7</div></div><div class="br-row"><div class="br-lbl">Pitești Retail Park (Aug)</div><div class="br-track"><div class="br-fill" style="width:50%;background:var(--amber)"></div></div><div class="br-val ta">6</div></div>
+      </div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-t">What drives failed orders</div>
+      <p style="font-size:12px;color:var(--ink-m);line-height:1.6;margin-bottom:12px">All cancellations in Sep 2026 fall into one of four categories — each with a different action owner:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:var(--red-pale);border-radius:8px;padding:10px 12px"><div style="font-weight:700;font-size:11px;color:var(--red);margin-bottom:3px">Restaurant</div><div style="font-size:11px;color:var(--ink-m)">Did not accept / late confirmation / out-of-stock item → Buzau Shopping City Mall (10), Craiova Electroputere (7), Galati Cosbuc (12), Ramnicu Valcea (4), Vărsătura Braila Mall (3), Mega Mall (8)</div></div>
+        <div style="background:var(--amber-pale);border-radius:8px;padding:10px 12px"><div style="font-weight:700;font-size:11px;color:var(--amber);margin-bottom:3px">Courier</div><div style="font-size:11px;color:var(--ink-m)">Did not pick up on time, couldn't find the venue</div></div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px"><div style="font-weight:700;font-size:11px;color:var(--ink-l);margin-bottom:3px">Customer</div><div style="font-size:11px;color:var(--ink-m)">Cancelled due to long wait, placed by mistake</div></div>
+        <div style="background:var(--blue-pale);border-radius:8px;padding:10px 12px"><div style="font-weight:700;font-size:11px;color:var(--blue);margin-bottom:3px">Bolt / System</div><div style="font-size:11px;color:var(--ink-m)">No courier found in zone</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="alert"><strong>Mega Mall — 8 cancellations in September (2.7% fail rate)</strong>, compared with 3 in August. <strong>Galati Cosbuc — 12 cancellations (2.2%)</strong>. <strong>Galati Cosbuc</strong> has the slowest acceptance (1.08 min).</div>
+</div></div>
+
+<hr class="divider">
+
+<div id="monthly"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Monthly dynamics — January–September 2026</p>
+  <p class="sec-sub">Chain total YTD · September vs August</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">YTD Delivered Jan–Sep</div><div class="kcard-v">28,095</div><div class="kcard-d kneu">Sep: 4,256 (15.1% of YTD)</div></div>
+    <div class="kcard"><div class="kcard-l">YTD Revenue Jan–Sep</div><div class="kcard-v">401,575 €</div><div class="kcard-d kneu">Sep: 58,401 €</div></div>
+    <div class="kcard"><div class="kcard-l">YTD Bolt+ orders</div><div class="kcard-v">4,824</div><div class="kcard-d kneu">17.2% YTD share</div></div>
+    <div class="kcard"><div class="kcard-l">Peak month</div><div class="kcard-v">September</div><div class="kcard-d kneu">4,256 orders · 58,401 €</div></div>
+  </div>
+  <div class="chart-2">
+    <div class="ccard">
+      <div class="ccard-t">Delivered orders by month</div>
+      <svg viewBox="0 0 464 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible"><line x1="40" y1="18" x2="456" y2="18" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="58" x2="456" y2="58" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="98" x2="456" y2="98" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="138" x2="456" y2="138" stroke="var(--border)" stroke-width="1"/><text x="36" y="21" text-anchor="end" font-size="9" fill="var(--ink-l)">4.3k</text><text x="36" y="61" text-anchor="end" font-size="9" fill="var(--ink-l)">2.8k</text><text x="36" y="101" text-anchor="end" font-size="9" fill="var(--ink-l)">1.4k</text><text x="36" y="141" text-anchor="end" font-size="9" fill="var(--ink-l)">0</text><rect x="48" y="80" width="30" height="58" fill="var(--green)" opacity="0.55" rx="3"/><text x="63" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jan</text><rect x="94" y="49" width="30" height="89" fill="var(--green)" opacity="0.55" rx="3"/><text x="109" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Feb</text><rect x="140" y="42" width="30" height="96" fill="var(--green)" opacity="0.55" rx="3"/><text x="155" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Mar</text><rect x="186" y="60" width="30" height="78" fill="var(--green)" opacity="0.55" rx="3"/><text x="201" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Apr</text><rect x="232" y="74" width="30" height="64" fill="var(--green)" opacity="0.55" rx="3"/><text x="247" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">May</text><rect x="278" y="52" width="30" height="86" fill="var(--green)" opacity="0.55" rx="3"/><text x="293" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jun</text><rect x="324" y="68" width="30" height="70" fill="var(--green)" opacity="0.55" rx="3"/><text x="339" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jul</text><rect x="370" y="52" width="30" height="86" fill="var(--green)" opacity="0.55" rx="3"/><text x="385" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Aug</text><rect x="416" y="26" width="30" height="112" fill="var(--ink)" opacity="0.9" rx="3"/><text x="431" y="153" text-anchor="middle" font-size="8" font-weight="700" fill="var(--ink)">Sep</text><text x="431" y="22" text-anchor="middle" font-size="8" font-weight="600" fill="var(--ink)">4,256</text></svg>
+    </div>
+    <div class="ccard">
+      <div class="ccard-t">Revenue by month (€)</div>
+      <svg viewBox="0 0 464 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible"><line x1="40" y1="18" x2="456" y2="18" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="58" x2="456" y2="58" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="98" x2="456" y2="98" stroke="var(--border)" stroke-width="1"/><line x1="40" y1="138" x2="456" y2="138" stroke="var(--border)" stroke-width="1"/><text x="36" y="21" text-anchor="end" font-size="9" fill="var(--ink-l)">58k</text><text x="36" y="61" text-anchor="end" font-size="9" fill="var(--ink-l)">39k</text><text x="36" y="101" text-anchor="end" font-size="9" fill="var(--ink-l)">19k</text><text x="36" y="141" text-anchor="end" font-size="9" fill="var(--ink-l)">0</text><rect x="48" y="78" width="30" height="60" fill="#60C4A0" opacity="0.55" rx="3"/><text x="63" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jan</text><rect x="94" y="38" width="30" height="100" fill="#60C4A0" opacity="0.55" rx="3"/><text x="109" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Feb</text><rect x="140" y="33" width="30" height="105" fill="#60C4A0" opacity="0.55" rx="3"/><text x="155" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Mar</text><rect x="186" y="57" width="30" height="81" fill="#60C4A0" opacity="0.55" rx="3"/><text x="201" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Apr</text><rect x="232" y="73" width="30" height="65" fill="#60C4A0" opacity="0.55" rx="3"/><text x="247" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">May</text><rect x="278" y="51" width="30" height="87" fill="#60C4A0" opacity="0.55" rx="3"/><text x="293" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jun</text><rect x="324" y="68" width="30" height="70" fill="#60C4A0" opacity="0.55" rx="3"/><text x="339" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Jul</text><rect x="370" y="50" width="30" height="88" fill="#60C4A0" opacity="0.55" rx="3"/><text x="385" y="153" text-anchor="middle" font-size="8" font-weight="400" fill="var(--ink)">Aug</text><rect x="416" y="26" width="30" height="112" fill="var(--ink)" opacity="0.9" rx="3"/><text x="431" y="153" text-anchor="middle" font-size="8" font-weight="700" fill="var(--ink)">Sep</text><text x="431" y="22" text-anchor="middle" font-size="8" font-weight="600" fill="var(--ink)">58k</text></svg>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>YTD</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Delivered</td><td>2,222</td><td>3,390</td><td>3,657</td><td>2,977</td><td>2,421</td><td>3,276</td><td>2,647</td><td>3,249</td><td class="bold">4,256</td><td class="bold">28,095</td></tr>
+        <tr><td class="bold">Revenue €</td><td>31,534</td><td>52,287</td><td>54,908</td><td>42,170</td><td>34,074</td><td>45,601</td><td>36,735</td><td>45,866</td><td class="bold">58,401</td><td class="bold">401,575</td></tr>
+        <tr><td class="bold">Bolt+ orders</td><td>344</td><td>592</td><td>629</td><td>530</td><td>435</td><td>705</td><td>441</td><td>488</td><td class="bold">660</td><td class="bold">4,824</td></tr>
+        <tr><td class="bold">Failed orders</td><td>84</td><td>65</td><td>68</td><td>20</td><td>22</td><td>41</td><td>31</td><td>34</td><td class="bold">52</td><td class="bold">417</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div>
+
+<hr class="divider">
+
+<div id="promo"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Promo analytics — Aug &amp; Sep 2026</p>
+  <p class="sec-sub">Campaign spend Bolt vs. partner · promo order share per location</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Promo orders — Aug</div><div class="kcard-v">2,451</div><div class="kcard-d kneu">75.4% of delivered</div></div>
+    <div class="kcard"><div class="kcard-l">Promo orders — Sep</div><div class="kcard-v">3,503</div><div class="kcard-d kup">▲42.9% · 82.3%</div></div>
+    <div class="kcard"><div class="kcard-l">Bolt promo spend — Sep</div><div class="kcard-v">8,282 €</div><div class="kcard-d kneu">75.5% of total</div></div>
+    <div class="kcard"><div class="kcard-l">Partner promo spend — Sep</div><div class="kcard-v">2,684 €</div><div class="kcard-d kneu">24.5% of total</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>Promo Aug</th><th>%</th><th>Promo Sep</th><th>%</th>
+        <th>Bolt spend Sep €</th><th>Partner spend Sep €</th><th>Total Sep €</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Buzau Shopping City Mall</td><td>447</td><td>91.2%</td><td>600</td><td>88.0%</td><td>1,646</td><td class="ta">225</td><td class="bold">1,872</td></tr><tr><td class="bold">Galati Cosbuc</td><td>370</td><td>83.9%</td><td>486</td><td>89.8%</td><td>2,035</td><td class="ta">145</td><td class="bold">2,180</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>380</td><td>93.6%</td><td>451</td><td>91.3%</td><td>1,214</td><td class="ta">198</td><td class="bold">1,412</td></tr><tr><td class="bold">Afi Cotroceni</td><td>185</td><td>51.0%</td><td>410</td><td>79.6%</td><td>552</td><td class="ta">642</td><td class="bold">1,194</td></tr><tr><td class="bold">Craiova Electroputere</td><td>341</td><td>75.9%</td><td>399</td><td>68.2%</td><td>767</td><td class="ta">342</td><td class="bold">1,109</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>214</td><td>93.0%</td><td>292</td><td>93.6%</td><td>877</td><td>74</td><td class="bold">951</td></tr><tr><td class="bold">Mega Mall</td><td>152</td><td>59.6%</td><td>227</td><td>75.9%</td><td>352</td><td class="ta">263</td><td class="bold">616</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>80</td><td>64.0%</td><td>165</td><td>78.9%</td><td>121</td><td class="ta">226</td><td class="bold">347</td></tr><tr><td class="bold">Promenada Mall</td><td>75</td><td>56.0%</td><td>154</td><td>76.2%</td><td>175</td><td class="ta">250</td><td class="bold">425</td></tr><tr><td class="bold">Cosmopolis</td><td>75</td><td>39.9%</td><td>128</td><td>71.5%</td><td>166</td><td class="ta">134</td><td class="bold">300</td></tr><tr><td class="bold">Pitești Retail Park</td><td>80</td><td>84.2%</td><td>117</td><td>87.3%</td><td>255</td><td>76</td><td class="bold">331</td></tr><tr><td class="bold">Baneasa Mall</td><td>52</td><td>71.2%</td><td>74</td><td>71.2%</td><td>122</td><td class="ta">108</td><td class="bold">230</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="tip" style="margin-top:20px">
+    <strong>Offer — Smart Promo (joint Bolt × Hesburger)</strong><br>
+    An automatic Bolt promo mechanic to acquire new customers and win back dormant ones — without a permanent discount and without manual setup.
+  </div>
+  <div class="offer-grid" style="margin-top:14px">
+    <div class="ocard">
+      <div class="otag otag-rec">Recommended</div>
+      <div class="o-pct">30%</div>
+      <div class="o-title">First order discount</div>
+      <div class="o-body"><strong>For whom:</strong> new app users + those who haven't ordered in 60+ days<br><strong>Terms:</strong> −30% on first order + free delivery from 15 €<br><strong>Cost:</strong> 50/50 Bolt and partner</div>
+      <div class="o-cost">Most aggressive — converts cold &amp; dormant customers</div>
+    </div>
+    <div class="ocard">
+      <div class="otag otag-opt">Optional</div>
+      <div class="o-pct">10%</div>
+      <div class="o-title">Loyal app user discount</div>
+      <div class="o-body"><strong>For whom:</strong> active Bolt Food users who haven't ordered from Hesburger yet<br><strong>Terms:</strong> −10% on first order + free delivery from 15 €<br><strong>Cost:</strong> 100% partner</div>
+      <div class="o-cost">Small nudge — already loyal Bolt customers</div>
+    </div>
+    <div class="ocard">
+      <div class="otag otag-opt">Monthly</div>
+      <div class="o-pct">15%</div>
+      <div class="o-title">Bolt+ exclusive — 1 week/month</div>
+      <div class="o-body"><strong>For whom:</strong> Bolt+ subscribers only<br><strong>Terms:</strong> −15% on full menu, 1 week/month<br><strong>Cost:</strong> 50/50 Bolt and partner</div>
+      <div class="o-cost">Boosts Bolt+ share (currently 15–17% chain)</div>
+    </div>
+  </div>
+
+</div></div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════ TOP DISHES ═══════════════════════════════ -->
+<div id="dishes"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Top dishes — Jul–Sep 2026</p>
+  <p class="sec-sub">Most sold items across the chain and per location · source: Menu Item Sales Report</p>
+
+  <div class="chart-2">
+    <div class="ccard">
+      <div class="ccard-t">Top items — whole chain (items sold)</div>
+      <div class="bars">
+        <div class="br-row"><div class="br-lbl">#1 Mini pui meniu mare</div><div class="br-track"><div class="br-fill" style="width:100%"></div></div><div class="br-val">2,311</div></div>
+        <div class="br-row"><div class="br-lbl">#2 Mini pui meniu</div><div class="br-track"><div class="br-fill" style="width:33.3%"></div></div><div class="br-val">769</div></div>
+        <div class="br-row"><div class="br-lbl">#3 Mini burger pui</div><div class="br-track"><div class="br-fill" style="width:24.7%"></div></div><div class="br-val">571</div></div>
+        <div class="br-row"><div class="br-lbl">#4 Cheeseburger</div><div class="br-track"><div class="br-fill" style="width:23.1%;background:#60C4A0"></div></div><div class="br-val">533</div></div>
+        <div class="br-row"><div class="br-lbl">#5 Nuggets 4 buc. + sos</div><div class="br-track"><div class="br-fill" style="width:15.7%;background:#60C4A0"></div></div><div class="br-val">363</div></div>
+        <div class="br-row"><div class="br-lbl">#6 Cheeseburger meniu</div><div class="br-track"><div class="br-fill" style="width:10.2%;background:#60C4A0"></div></div><div class="br-val">235</div></div>
+        <div class="br-row"><div class="br-lbl">#7 Hesburger meniu mare</div><div class="br-track"><div class="br-fill" style="width:6.7%;background:#60C4A0"></div></div><div class="br-val">155</div></div>
+      </div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-t">Category split · items sold</div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding-top:6px">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;font-weight:600">Meniuri (combos)</span><span style="font-size:12px;font-weight:700;color:var(--green-d)">3,487 · 68.0%</span></div><div class="br-track" style="height:11px"><div class="br-fill" style="width:68%;height:11px"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;font-weight:600">Burgeri (à la carte)</span><span style="font-size:12px;font-weight:700;color:var(--green-d)">1,104 · 21.6%</span></div><div class="br-track" style="height:11px"><div class="br-fill" style="width:21.6%;height:11px;background:#60C4A0"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px;font-weight:600">Finger food / sides</span><span style="font-size:12px;font-weight:700;color:var(--green-d)">363 · 7.1%</span></div><div class="br-track" style="height:11px"><div class="br-fill" style="width:7.1%;height:11px;background:#A7E0CA"></div></div></div>
+        <div class="insight" style="margin-top:4px"><strong>68% of items sold are combo meals</strong>. Mini burger de pui meniu mare alone = 45% of all items. Nuggets appear only at Buzău so far — chain-wide rollout could boost basket size.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-3">
+    <div class="ccard"><div class="ccard-t">Buzau Shopping City Mall</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">#1 Mini pui m.m.</div><div class="br-track"><div class="br-fill" style="width:100%"></div></div><div class="br-val">881</div></div>
+      <div class="br-row"><div class="br-lbl">#2 Mini pui meniu</div><div class="br-track"><div class="br-fill" style="width:45.1%"></div></div><div class="br-val">397</div></div>
+      <div class="br-row"><div class="br-lbl">#3 Nuggets 4+sos</div><div class="br-track"><div class="br-fill" style="width:41.2%;background:#60C4A0"></div></div><div class="br-val">363</div></div>
+      <div class="br-row"><div class="br-lbl">#4 Mini burger pui</div><div class="br-track"><div class="br-fill" style="width:18.6%"></div></div><div class="br-val">164</div></div>
+    </div></div>
+    <div class="ccard"><div class="ccard-t">Galati Cosbuc</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">#1 Mini pui m.m.</div><div class="br-track"><div class="br-fill" style="width:100%"></div></div><div class="br-val">552</div></div>
+      <div class="br-row"><div class="br-lbl">#2 Mini burger pui</div><div class="br-track"><div class="br-fill" style="width:73.7%"></div></div><div class="br-val">407</div></div>
+      <div class="br-row"><div class="br-lbl">#3 Hesburger m.m.</div><div class="br-track"><div class="br-fill" style="width:9.8%;background:#60C4A0"></div></div><div class="br-val">54</div></div>
+    </div></div>
+    <div class="ccard"><div class="ccard-t">Ramnicu Valcea</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">#1 Mini pui m.m.</div><div class="br-track"><div class="br-fill" style="width:100%"></div></div><div class="br-val">794</div></div>
+    </div><p style="font-size:11px;color:var(--ink-l);margin-top:10px">Single dominant item — menu diversity opportunity.</p></div>
+    <div class="ccard"><div class="ccard-t">Craiova Electroputere</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">#1 Mini pui meniu</div><div class="br-track"><div class="br-fill" style="width:100%"></div></div><div class="br-val">372</div></div>
+      <div class="br-row"><div class="br-lbl">#2 Cheeseburger</div><div class="br-track"><div class="br-fill" style="width:28.5%;background:#60C4A0"></div></div><div class="br-val">106</div></div>
+      <div class="br-row"><div class="br-lbl">#3 Mini pui m.m.</div><div class="br-track"><div class="br-fill" style="width:22.6%"></div></div><div class="br-val">84</div></div>
+    </div></div>
+    <div class="ccard"><div class="ccard-t">Afi Cotroceni (Bucharest)</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">#1 Cheeseburger</div><div class="br-track"><div class="br-fill" style="width:100%;background:#60C4A0"></div></div><div class="br-val">427</div></div>
+      <div class="br-row"><div class="br-lbl">#2 Cheeseb. meniu</div><div class="br-track"><div class="br-fill" style="width:44.7%;background:#60C4A0"></div></div><div class="br-val">191</div></div>
+      <div class="br-row"><div class="br-lbl">#3 Hesburger m.m.</div><div class="br-track"><div class="br-fill" style="width:6.6%;background:#60C4A0"></div></div><div class="br-val">28</div></div>
+    </div><p style="font-size:11px;color:var(--ink-l);margin-top:8px">Only location where Cheeseburger beats chicken menu — different customer profile.</p></div>
+    <div class="ccard"><div class="ccard-t">Mega Mall & Promenada</div><div class="bars">
+      <div class="br-row"><div class="br-lbl">Mega · Hesburger m.m.</div><div class="br-track"><div class="br-fill" style="width:43%;background:#60C4A0"></div></div><div class="br-val">33</div></div>
+      <div class="br-row"><div class="br-lbl">Promenada · Cheeseb. m.</div><div class="br-track"><div class="br-fill" style="width:58%;background:#60C4A0"></div></div><div class="br-val">44</div></div>
+    </div><p style="font-size:11px;color:var(--ink-l);margin-top:8px">Limited data — fewer weekly snapshots in export.</p></div>
+  </div>
+</div></div>
+
+<hr class="divider">
+
+
+<hr class="divider">
+
+<div id="availability"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Location availability &amp; operations</p>
+  <p class="sec-sub">Acceptance · preparation · delivery times per location · Aug vs Sep 2026</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>City</th>
+        <th>Acceptance Aug</th><th>Acceptance Sep</th>
+        <th>Prep Aug</th><th>Prep Sep</th>
+        <th>Delivery Aug</th><th>Delivery Sep</th>
+        <th>Status Sep</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Ramnicu Valcea</td><td>Rm. Vâlcea</td><td>0.39</td><td>0.38</td><td>9.93</td><td>9.65</td><td class="tg">19.79</td><td class="tg">18.85</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Craiova Electroputere</td><td>Craiova</td><td>0.32</td><td>0.29</td><td>10.74</td><td>9.50</td><td class="tg">21.01</td><td class="tg">21.54</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Cosmopolis</td><td>Bucharest</td><td>0.45</td><td>0.36</td><td>11.40</td><td>11.25</td><td class="tg">21.88</td><td>22.30</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Promenada Mall</td><td>Bucharest</td><td>0.47</td><td class="ta">0.58</td><td class="ta">13.15</td><td class="ta">12.02</td><td>23.46</td><td>22.31</td><td><span class="badge ba">Attention</span></td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>Iași</td><td>0.32</td><td>0.32</td><td>10.72</td><td>8.60</td><td>25.59</td><td>24.36</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Afi Cotroceni</td><td>Bucharest</td><td>0.36</td><td>0.38</td><td>10.26</td><td>11.46</td><td>25.24</td><td>24.48</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Buzau Shopping City Mall</td><td>Buzău</td><td>0.41</td><td>0.33</td><td>10.78</td><td>11.33</td><td>23.89</td><td>24.65</td><td><span class="badge bg">Good</span></td></tr><tr><td class="bold">Galati Cosbuc</td><td>Galați</td><td class="ta">0.52</td><td class="tr">1.08</td><td>10.12</td><td>9.82</td><td>25.82</td><td>24.75</td><td><span class="badge br">Critical</span></td></tr><tr><td class="bold">Mega Mall</td><td>Bucharest</td><td class="ta">0.56</td><td class="ta">0.55</td><td class="tr">17.85</td><td>11.34</td><td class="tr">30.44</td><td>27.10</td><td><span class="badge ba">Attention</span></td></tr><tr><td class="bold">Baneasa Mall</td><td>Bucharest</td><td>0.45</td><td class="ta">0.71</td><td>9.73</td><td class="ta">13.65</td><td>24.69</td><td>27.27</td><td><span class="badge ba">Attention</span></td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>Brăila</td><td>0.41</td><td>0.35</td><td>10.12</td><td>10.08</td><td>27.57</td><td class="tr">28.34</td><td><span class="badge ba">Attention</span></td></tr><tr><td class="bold">Pitești Retail Park</td><td>Pitești</td><td class="ta">0.71</td><td class="ta">0.82</td><td>11.03</td><td>11.69</td><td class="tr">30.79</td><td class="tr">32.17</td><td><span class="badge br">Critical</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:10px;color:var(--ink-l);margin-top:6px">Acceptance: ≤0.5 good · 0.5–1 attention · &gt;1 critical. Prep: ≤12 min good · 12–16 attention · &gt;16 critical.</p>
+  <div class="alert"><strong>Baneasa Mall — prep 13.65 min in September</strong> (from 9.73 min in August). <strong>Galati Cosbuc</strong> has the slowest acceptance (1.08 min).</div>
+</div></div>
+
+<hr class="divider">
+
+<div id="funnel"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Customer journey funnel</p>
+  <p class="sec-sub">From impression to placed order · Hesburger chain total · Aug vs Sep 2026</p>
+  <div class="chart-2">
+    
+    <div class="ccard">
+      <div class="ccard-t">August 2026 — chain funnel</div>
+      <div class="funnel">
+        <div class="fn-step"><div class="fn-lbl">Impressions</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:100%;background:#0B1F16"><span>baseline</span></div></div></div><div class="fn-val">299,663</div></div>
+        <div class="fn-arrow">↓ 4.3% open menu</div>
+        <div class="fn-step"><div class="fn-lbl">Viewed menu</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:4.33%;background:var(--green)"><span></span></div></div></div><div class="fn-val">12,980</div></div>
+        <div class="fn-arrow">↓ 38.3% add to cart</div>
+        <div class="fn-step"><div class="fn-lbl">Added to cart</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:1.66%;background:var(--green)"><span></span></div></div></div><div class="fn-val">4,977</div></div>
+        <div class="fn-arrow">↓ 64.4% place order</div>
+        <div class="fn-step"><div class="fn-lbl">Placed order</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:1.20%;background:var(--green-d)"><span></span></div></div></div><div class="fn-val">3,205</div></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">4.3%</div><div style="font-size:9px;color:var(--ink-l)">Imp → menu</div></div>
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">38.3%</div><div style="font-size:9px;color:var(--ink-l)">Menu → cart</div></div>
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">64.4%</div><div style="font-size:9px;color:var(--ink-l)">Cart → order</div></div>
+      </div>
+    </div>
+    
+    <div class="ccard">
+      <div class="ccard-t">September 2026 — chain funnel</div>
+      <div class="funnel">
+        <div class="fn-step"><div class="fn-lbl">Impressions</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:100%;background:#0B1F16"><span>baseline</span></div></div></div><div class="fn-val">387,067</div></div>
+        <div class="fn-arrow">↓ 4.6% open menu</div>
+        <div class="fn-step"><div class="fn-lbl">Viewed menu</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:4.56%;background:var(--green)"><span></span></div></div></div><div class="fn-val">17,638</div></div>
+        <div class="fn-arrow">↓ 37.3% add to cart</div>
+        <div class="fn-step"><div class="fn-lbl">Added to cart</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:1.70%;background:var(--green)"><span></span></div></div></div><div class="fn-val">6,583</div></div>
+        <div class="fn-arrow">↓ 63.5% place order</div>
+        <div class="fn-step"><div class="fn-lbl">Placed order</div><div class="fn-bar-w"><div class="fn-outer"><div class="fn-inner" style="width:1.20%;background:var(--green-d)"><span></span></div></div></div><div class="fn-val">4,181</div></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">4.6%</div><div style="font-size:9px;color:var(--ink-l)">Imp → menu</div></div>
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">37.3%</div><div style="font-size:9px;color:var(--ink-l)">Menu → cart</div></div>
+        <div style="text-align:center;padding:10px;background:var(--bg);border-radius:8px;flex:1;min-width:70px"><div style="font-size:17px;font-weight:700;color:var(--green-d)">63.5%</div><div style="font-size:9px;color:var(--ink-l)">Cart → order</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="insight">Impressions moved <strong>▲29.2% vs Aug</strong> (299,663 → 387,067). Cart-to-order conversion went from 64.4% to 63.5%. Menu-open rate moved from 4.3% to 4.6%.</div>
+</div></div>
+
+<hr class="divider">
+
+<div id="boltplus"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Bolt+ — subscriber analytics</p>
+  <p class="sec-sub">Bolt+ orders and delivery investment · Aug &amp; Sep 2026</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Bolt+ orders — Aug</div><div class="kcard-v">488</div><div class="kcard-d kneu">15.0% share</div></div>
+    <div class="kcard"><div class="kcard-l">Bolt+ orders — Sep</div><div class="kcard-v">660</div><div class="kcard-d kup">▲35.2% · 15.5% share</div></div>
+    <div class="kcard"><div class="kcard-l">Bolt delivery invest. Sep</div><div class="kcard-v">—</div><div class="kcard-d kneu">not in this Looker extract</div></div>
+    <div class="kcard"><div class="kcard-l">Top Bolt+ location (Sep)</div><div class="kcard-v">Afi Cotroceni</div><div class="kcard-d kneu">192 orders · 37.3%</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Location</th><th>Bolt+ Aug</th><th>Bolt+ Sep</th><th>MoM</th><th>Share Sep</th><th>Bolt invest. Sep €</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Afi Cotroceni</td><td>110</td><td class="bold">192</td><td class="tg">▲74.5%</td><td>37.3%</td><td>—</td></tr><tr><td class="bold">Mega Mall</td><td>91</td><td class="bold">93</td><td class="tg">▲2.2%</td><td>31.1%</td><td>—</td></tr><tr><td class="bold">Promenada Mall</td><td>44</td><td class="bold">80</td><td class="tg">▲81.8%</td><td>39.6%</td><td>—</td></tr><tr><td class="bold">Craiova Electroputere</td><td>46</td><td class="bold">64</td><td class="tg">▲39.1%</td><td>10.9%</td><td>—</td></tr><tr><td class="bold">Galati Cosbuc</td><td>43</td><td class="bold">40</td><td class="tr">▼7.0%</td><td>7.4%</td><td>—</td></tr><tr><td class="bold">Baneasa Mall</td><td>35</td><td class="bold">31</td><td class="tr">▼11.4%</td><td>29.8%</td><td>—</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>12</td><td class="bold">30</td><td class="tg">▲150.0%</td><td>9.6%</td><td>—</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>13</td><td class="bold">29</td><td class="tg">▲123.1%</td><td>13.9%</td><td>—</td></tr><tr><td class="bold">Cosmopolis</td><td>29</td><td class="bold">29</td><td class="kneu">0.0%</td><td>16.2%</td><td>—</td></tr><tr><td class="bold">Buzau Shopping City Mall</td><td>31</td><td class="bold">28</td><td class="tr">▼9.7%</td><td>4.1%</td><td>—</td></tr><tr><td class="bold">Pitești Retail Park</td><td>19</td><td class="bold">24</td><td class="tg">▲26.3%</td><td>17.9%</td><td>—</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>15</td><td class="bold">20</td><td class="tg">▲33.3%</td><td>4.0%</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="insight"><strong>Vărsătura Braila Mall Bolt+ ▲150%</strong> (12 → 30). <strong>Promenada Mall</strong> has the highest Bolt+ share (39.6%). <strong>Ramnicu Valcea</strong> has the lowest Bolt+ share (4.0%).</div>
+</div></div>
+
+<hr class="divider">
+
+<div id="ratings"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Rating &amp; quality</p>
+  <p class="sec-sub">Average customer ratings per location · Aug &amp; Sep 2026</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Avg chain rating — Aug</div><div class="kcard-v">4.33 ★</div><div class="kcard-d kneu">12 locations</div></div>
+    <div class="kcard"><div class="kcard-l">Avg chain rating — Sep</div><div class="kcard-v">4.33 ★</div><div class="kcard-d kdn">▼0.01 vs Aug</div></div>
+    <div class="kcard"><div class="kcard-l">Best (Sep)</div><div class="kcard-v">4.59 ★</div><div class="kcard-d kneu">Cosmopolis</div></div>
+    <div class="kcard"><div class="kcard-l">Critical (Sep)</div><div class="kcard-v">3.92 ★</div><div class="kcard-d kdn">Iasi Moldova Mall</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Location</th><th>City</th><th>Rating Aug ★</th><th>Rating Sep ★</th><th>Change</th><th>Bad rating% Sep</th><th>Good rating% Sep</th></tr></thead>
+      <tbody>
+        <tr><td class="bold">Cosmopolis</td><td>Bucharest</td><td>4.61</td><td class="tg">4.59</td><td class="tr">▼0.02</td><td>3.1%</td><td>20.7%</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>Brăila</td><td>4.43</td><td class="tg">4.57</td><td class="tg">▲0.14</td><td>3.9%</td><td>28.8%</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>Rm. Vâlcea</td><td>4.79</td><td class="tg">4.51</td><td class="tr">▼0.27</td><td>4.1%</td><td>27.0%</td></tr><tr><td class="bold">Baneasa Mall</td><td>Bucharest</td><td>4.28</td><td class="tg">4.48</td><td class="tg">▲0.20</td><td>3.3%</td><td>22.0%</td></tr><tr><td class="bold">Galati Cosbuc</td><td>Galați</td><td>4.30</td><td class="tg">4.42</td><td class="tg">▲0.11</td><td>4.5%</td><td>24.4%</td></tr><tr><td class="bold">Promenada Mall</td><td>Bucharest</td><td>4.41</td><td class="tg">4.41</td><td>0.00</td><td>5.7%</td><td>26.9%</td></tr><tr><td class="bold">Craiova Electroputere</td><td>Craiova</td><td>4.32</td><td class="tg">4.40</td><td class="tg">▲0.09</td><td>4.4%</td><td>23.0%</td></tr><tr><td class="bold">Pitești Retail Park</td><td>Pitești</td><td>3.97</td><td class="tg">4.40</td><td class="tg">▲0.44</td><td>6.3%</td><td>30.3%</td></tr><tr><td class="bold">Afi Cotroceni</td><td>Bucharest</td><td>4.19</td><td>4.21</td><td class="tg">▲0.03</td><td>6.0%</td><td>22.0%</td></tr><tr><td class="bold">Buzau Shopping City Mall</td><td>Buzău</td><td>4.33</td><td>4.18</td><td class="tr">▼0.15</td><td>5.6%</td><td>20.9%</td></tr><tr><td class="bold">Mega Mall</td><td>Bucharest</td><td>3.75</td><td class="tr">3.96</td><td class="tg">▲0.21</td><td class="tr">10.2%</td><td>25.2%</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>Iași</td><td>4.27</td><td class="tr">3.92</td><td class="tr">▼0.35</td><td>8.0%</td><td>21.2%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="insight"><strong>Largest drop:</strong> Iasi Moldova Mall -0.35 to 3.92★. <strong>Largest gain:</strong> Pitești Retail Park +0.44 to 4.40★. <strong>Iasi Moldova Mall</strong> is below 4.0★. <strong>Mega Mall</strong> has the highest bad-rating rate at 10.2%.</div>
+</div></div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════ REFUNDS ═══════════════════════════════ -->
+<div id="refunds"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Refunds — August 2026</p>
+  <p class="sec-sub">Reasons: wrong_item · missing_item · food quality · all provider liability</p>
+
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Refund items (Aug)</div><div class="kcard-v">16</div><div class="kcard-d kneu">on 8 affected orders</div></div>
+    <div class="kcard"><div class="kcard-l">Total refund amount</div><div class="kcard-v">79.53 RON</div><div class="kcard-d kdn">100% provider liability</div></div>
+    <div class="kcard"><div class="kcard-l">Provider deduction</div><div class="kcard-v">79.53 RON</div><div class="kcard-d kneu">deducted from invoice</div></div>
+    <div class="kcard"><div class="kcard-l">Active refund reason</div><div class="kcard-v">wrong_item</div><div class="kcard-d kneu">missing & quality = 0</div></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>Reason</th><th>Liability</th><th>Items</th>
+        <th>Products refunded</th><th>Total RON</th><th>Provider deduction RON</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Buzau Shopping City Mall</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>4</td><td style="font-size:11px;color:var(--ink-m)">Mini burger de pui meniu, Hamburger</td><td class="tr">28.20</td><td class="tr">28.20</td></tr>
+        <tr><td class="bold">Craiova Electroputere</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>4</td><td style="font-size:11px;color:var(--ink-m)">VEKE® Cheeseburger dublu; Nuggets 4 buc.+sos, Meniu Nuggets 4</td><td class="tr">14.18</td><td class="tr">14.18</td></tr>
+        <tr><td class="bold">Mega Mall</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>2</td><td style="font-size:11px;color:var(--ink-m)">Hesburger meniu mare; Cheeseburger meniu mare</td><td class="tr">12.21</td><td class="tr">12.21</td></tr>
+        <tr><td class="bold">Galati Cosbuc</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>1</td><td style="font-size:11px;color:var(--ink-m)">Burger cu bacon meniu mare</td><td>10.14</td><td>10.14</td></tr>
+        <tr><td class="bold">Afi Cotroceni</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>2</td><td style="font-size:11px;color:var(--ink-m)">Mini burger de pui</td><td>9.80</td><td>9.80</td></tr>
+        <tr><td class="bold">Iasi Moldova Mall</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>1</td><td style="font-size:11px;color:var(--ink-m)">Tortilla de soia VEKE® meniu</td><td>2.56</td><td>2.56</td></tr>
+        <tr><td class="bold">Cosmopolis</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>1</td><td style="font-size:11px;color:var(--ink-m)">Burger cu bacon meniu</td><td>2.24</td><td>2.24</td></tr>
+        <tr><td class="bold">Vărsătura Braila Mall</td><td><span class="badge br">wrong_item</span></td><td class="tr">provider</td><td>1</td><td style="font-size:11px;color:var(--ink-m)">Nuggets de pui 4 buc. + sos</td><td>0.20</td><td>0.20</td></tr>
+        <tr style="background:var(--bg)"><td class="bold" colspan="3">CHAIN TOTAL</td><td class="bold">16</td><td style="font-size:11px;color:var(--ink-l)">8 orders affected</td><td class="tr bold">79.53</td><td class="tr bold">79.53</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="insight">
+    <strong>Zero missing_item, zero food quality, zero food poisoning cases in August.</strong> All 16 items refunded are wrong_item — a packing/order accuracy issue, not a food quality problem. <strong>Buzău</strong> accounts for 35.4% of total refund value. <strong>4 locations with zero refunds:</strong> Rm. Vâlcea, Baneasa Mall, Promenada Mall, Pitești — operational accuracy benchmarks for the chain.
+  </div>
+</div></div>
+
+<hr class="divider">
+
+
+<hr class="divider">
+
+<div id="sponsored"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Sponsored Listing — paid promotion</p>
+  <p class="sec-sub">A tool to boost venue visibility in the Bolt Food app · 8.33 € / day per location</p>
+  <div class="kpi-row">
+    <div class="kcard"><div class="kcard-l">Cost per location</div><div class="kcard-v">8.33 €/day</div><div class="kcard-d kneu">58.31 €/week</div></div>
+    <div class="kcard"><div class="kcard-l">Active SL locations</div><div class="kcard-v">0 / 12</div><div class="kcard-d kdn">No SL active in Sep</div></div>
+    <div class="kcard"><div class="kcard-l">SL investment — Sep</div><div class="kcard-v">0 €</div><div class="kcard-d kneu">0.0% of GMV · 0 € in Aug</div></div>
+    <div class="kcard"><div class="kcard-l">Total Sep impressions</div><div class="kcard-v">387,067</div><div class="kcard-d kup">▲29.2% vs Aug</div></div>
+  </div>
+  <div class="tip">
+    <strong>No Hesburger location had active Sponsored Listing in August or September 2026. All 12 locations are candidates for launch.</strong> SL is most effective during peak hours: lunch 12:00–14:00, dinner 18:00–21:00. For locations with rating below 4.0★ — improve quality first, then activate SL. Typical ROI is 3–8× per € spent → GMV.
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:20px">
+    <div class="sl-card" style="border-color:var(--amber)"><div class="sl-name">Iasi Moldova Mall</div><div class="sl-meta">Iași · 3.92★ · 209 orders (Sep)</div><div class="sl-imp">Impressions Sep: 16,675</div><div style="font-size:11px;color:var(--amber);font-weight:600;margin-top:4px">⚠ Rating below 4.0★ — address ops first</div></div><div class="sl-card" style="border-color:var(--amber)"><div class="sl-name">Mega Mall</div><div class="sl-meta">Bucharest · 3.96★ · 299 orders (Sep)</div><div class="sl-imp">Impressions Sep: 29,889</div><div style="font-size:11px;color:var(--amber);font-weight:600;margin-top:4px">⚠ Rating below 4.0★ — address ops first</div></div><div class="sl-card"><div class="sl-name">Baneasa Mall</div><div class="sl-meta">Bucharest · 4.48★ · 104 orders (Sep)</div><div class="sl-imp">Impressions Sep: 8,952</div><div class="sl-cost">58.31 €/week · High priority</div><span class="sl-priority badge bg">High priority</span></div><div class="sl-card"><div class="sl-name">Pitești Retail Park</div><div class="sl-meta">Pitești · 4.40★ · 134 orders (Sep)</div><div class="sl-imp">Impressions Sep: 9,170</div><div class="sl-cost">58.31 €/week</div><span class="sl-priority badge bg">Recommended</span></div><div class="sl-card"><div class="sl-name">Promenada Mall</div><div class="sl-meta">Bucharest · 4.41★ · 202 orders (Sep)</div><div class="sl-imp">Impressions Sep: 16,619</div><div class="sl-cost">58.31 €/week</div><span class="sl-priority badge bg">Recommended</span></div><div class="sl-card"><div class="sl-name">Vărsătura Braila Mall</div><div class="sl-meta">Brăila · 4.57★ · 312 orders (Sep)</div><div class="sl-imp">Impressions Sep: 22,396</div><div class="sl-cost">58.31 €/week</div><span class="sl-priority badge bg">Recommended</span></div><div class="sl-card"><div class="sl-name">Ramnicu Valcea</div><div class="sl-meta">Rm. Vâlcea · 4.51★ · 494 orders (Sep)</div><div class="sl-imp">Impressions Sep: 36,644</div><div class="sl-cost">58.31 €/week</div><span class="sl-priority badge bg">Recommended</span></div><div class="sl-card"><div class="sl-name">Cosmopolis</div><div class="sl-meta">Bucharest · 4.59★ · 179 orders (Sep)</div><div class="sl-imp">Impressions Sep: 9,124</div><div class="sl-cost">58.31 €/week</div><span class="sl-priority badge bb">Base</span></div>
+  </div>
+</div></div>
+
+<hr class="divider">
+
+<div id="locations"></div>
+<div class="wrap"><div class="section">
+  <p class="sec-title">Detailed location analytics — September 2026</p>
+  <p class="sec-sub">Strengths, growth areas and key metrics per location</p>
+  <div class="loc-grid">
+    <div class="lcard"><div class="lcard-h"><div><div class="lname">Buzau Shopping City Mall</div><div class="lcity">Buzău</div></div><div style="text-align:right"><div class="lrating">4.18 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">682</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">8,253 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">12.10 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ #1 volume · ▲39.2% MoM · prep 11.3 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ Bolt+ 4.1% · promo 88%</div></div><div class="lcard"><div class="lcard-h"><div><div class="lname">Craiova Electroputere</div><div class="lcity">Craiova</div></div><div style="text-align:right"><div class="lrating">4.40 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">585</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">7,454 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">12.74 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲30.3% MoM · prep 9.5 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ Bolt+ 10.9% · promo 68%</div></div><div class="lcard" style="border-color:var(--red);border-width:2px"><div class="lcard-h"><div><div class="lname">Galati Cosbuc</div><div class="lcity">Galați</div></div><div style="text-align:right"><div class="lrating">4.42 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">541</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">7,971 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">14.73 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲22.7% MoM · prep 9.8 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ acceptance 1.08 min</div></div><div class="lcard"><div class="lcard-h"><div><div class="lname">Afi Cotroceni</div><div class="lcity">Bucharest</div></div><div style="text-align:right"><div class="lrating">4.21 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">515</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">8,214 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">15.95 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲41.9% MoM · prep 11.5 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ Bolt+ 37.3% · promo 80%</div></div><div class="lcard"><div class="lcard-h"><div><div class="lname">Ramnicu Valcea</div><div class="lcity">Rm. Vâlcea</div></div><div style="text-align:right"><div class="lrating">4.51 ★</div><div class="lstars">★★★★★</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">494</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">5,893 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">11.93 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲21.7% MoM · rating 4.51★ · prep 9.6 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ Bolt+ 4.0% · promo 91%</div></div><div class="lcard" style="border-color:var(--amber);border-width:2px"><div class="lcard-h"><div><div class="lname">Vărsătura Braila Mall</div><div class="lcity">Brăila</div></div><div style="text-align:right"><div class="lrating">4.57 ★</div><div class="lstars">★★★★★</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">312</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">4,150 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">13.30 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲35.7% MoM · rating 4.57★ · prep 10.1 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ delivery 28.3 min</div></div><div class="lcard" style="border-color:var(--red);border-width:2px"><div class="lcard-h"><div><div class="lname">Mega Mall</div><div class="lcity">Bucharest</div></div><div style="text-align:right"><div class="lrating" style="color:var(--red)">3.96 ★</div><div class="lstars">★★★☆☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">299</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">4,614 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">15.43 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲17.3% MoM · prep 11.3 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ acceptance 0.55 min · rating 3.96★</div></div><div class="lcard" style="border-color:var(--red);border-width:2px"><div class="lcard-h"><div><div class="lname">Iasi Moldova Mall</div><div class="lcity">Iași</div></div><div style="text-align:right"><div class="lrating" style="color:var(--red)">3.92 ★</div><div class="lstars">★★★☆☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">209</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">2,693 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">12.89 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲67.2% MoM · 0 cancellations · prep 8.6 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ rating 3.92★</div></div><div class="lcard" style="border-color:var(--amber);border-width:2px"><div class="lcard-h"><div><div class="lname">Promenada Mall</div><div class="lcity">Bucharest</div></div><div style="text-align:right"><div class="lrating">4.41 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">202</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">2,946 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">14.59 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲50.7% MoM</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ acceptance 0.58 min</div></div><div class="lcard"><div class="lcard-h"><div><div class="lname">Cosmopolis</div><div class="lcity">Bucharest</div></div><div style="text-align:right"><div class="lrating">4.59 ★</div><div class="lstars">★★★★★</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">179</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">2,613 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">14.60 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▼4.8% MoM · rating 4.59★ · prep 11.2 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ Bolt+ 16.2% · promo 72%</div></div><div class="lcard" style="border-color:var(--red);border-width:2px"><div class="lcard-h"><div><div class="lname">Pitești Retail Park</div><div class="lcity">Pitești</div></div><div style="text-align:right"><div class="lrating">4.40 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">134</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">1,861 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">13.89 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲41.1% MoM · prep 11.7 min</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ acceptance 0.82 min · delivery 32.2 min</div></div><div class="lcard" style="border-color:var(--amber);border-width:2px"><div class="lcard-h"><div><div class="lname">Baneasa Mall</div><div class="lcity">Bucharest</div></div><div style="text-align:right"><div class="lrating">4.48 ★</div><div class="lstars">★★★★☆</div></div></div><div class="lmetrics"><div class="lm"><div class="lm-v">104</div><div class="lm-l">Delivered</div></div><div class="lm"><div class="lm-v">1,738 €</div><div class="lm-l">Revenue</div></div><div class="lm"><div class="lm-v">16.71 €</div><div class="lm-l">AOV</div></div></div><div class="ltag" style="color:var(--green-d)">✓ ▲42.5% MoM</div><div class="ltag" style="color:var(--amber);margin-top:4px">△ acceptance 0.71 min</div></div>
+  </div>
+</div></div>
+
+<footer class="footer">
+  Bolt Food Romania × Hesburger · Confidential report · August–September 2026<br>
+  Account Management Team · Data: Bolt Looker (curated_delivery / fact_provider · incentives / sponsored listings)<br>
+  Generated on 20 October 2026
+</footer>
+
+<script>
+function showMonth(m){
+  document.getElementById('h-jul').style.display = m==='jul'?'grid':'none';
+  document.getElementById('h-aug').style.display = m==='aug'?'grid':'none';
+  var hm = document.getElementById('h-mtd');
+  if (hm) hm.style.display = m==='mtd'?'grid':'none';
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',(i===0&&m==='jul')||(i===1&&m==='aug')||(i===2&&m==='mtd'));
+  });
+}
+</script>
+</body>
+</html>
