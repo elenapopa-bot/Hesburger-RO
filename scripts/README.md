@@ -32,9 +32,10 @@ Pulls metrics from Looker (Chrome session cookies) and publishes `index.html` to
 5. **Run manually**:
 
    ```bash
-   ~/.hesburger_ro_env   # or: source ~/.hesburger_ro_env
    python3 ~/scripts/hesburger_ro_update.py
    ```
+
+   (The script reads `~/.hesburger_ro_env` by itself — you do not need `source`.)
 
    Log: `~/scripts/hesburger_ro.log`
 

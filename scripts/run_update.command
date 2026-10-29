@@ -17,8 +17,9 @@ if [[ ! -f "$ENV_FILE" ]]; then
   read -r _
   exit 1
 fi
+# POSIX `.` works when `source` is missing (sh/dash); script also reads env file itself.
 # shellcheck disable=SC1090
-source "$ENV_FILE"
+. "$ENV_FILE"
 
 if [[ -f "$HOME/scripts/hesburger_ro_update.py" ]]; then
   PY="$HOME/scripts/hesburger_ro_update.py"
