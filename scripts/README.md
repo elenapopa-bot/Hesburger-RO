@@ -50,6 +50,12 @@ Pulls metrics from Looker (Chrome session cookies) and publishes `index.html` to
 
 The Mac must be awake, unlocked, and Chrome logged into Looker.
 
+## Easiest run on Mac (no Cursor)
+
+1. In Finder, open the repo folder → `scripts` → double-click **`run_update.command`**.
+2. If macOS blocks it: right-click → **Open** → **Open** again.
+3. Log in to Looker in Chrome when asked, then press **Enter** in the Terminal window.
+
 ## Live report
 
 https://elenapopa-bot.github.io/Hesburger-RO/
