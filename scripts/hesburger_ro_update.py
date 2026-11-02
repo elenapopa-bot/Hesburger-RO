@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-02-py39-v4"
+SCRIPT_VERSION = "2026-11-02-py39-v5"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -1577,7 +1577,7 @@ def build_html(original, data):
     if "flex-wrap" not in styles and ".tab-bar{" in styles:
         styles = styles.replace(
             ".tab-bar{display:flex;gap:4px;margin-bottom:28px}",
-            ".tab-bar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:28px}",
+            ".tab-bar{display:flex;flex-wrap:nowrap;gap:4px;margin-bottom:28px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}",
         )
 
     page = f"""<!DOCTYPE html>
