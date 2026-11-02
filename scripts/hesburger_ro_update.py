@@ -1123,20 +1123,24 @@ def build_html(original, data):
         history_delivered_rows.append(
             "<tr>"
             f'<td class="bold">{esc(name)}</td><td>{esc(city)}</td>'
-            f"{''.join(f'<td>{cell}</td>' for cell in month_cells)}"
-            f"{mom_cell}"
-            "</tr>"
+            + "".join(f"<td>{cell}</td>" for cell in month_cells)
+            + mom_cell
+            + "</tr>"
         )
     chain_history_cells = []
     for m in range(1, month + 1):
         val = series[m - 1]["delivered"]
         chain_history_cells.append("—" if val <= 0 else fmt_int(val))
+    chain_td_cells = "".join(f'<td class="bold">{cell}</td>' for cell in chain_history_cells)
+    chain_mom_cell = (
+        mom_td(series[-1]["delivered"], series[-2]["delivered"]) if month > 1 else "<td>—</td>"
+    )
     chain_history_row = (
         "<tr>"
         '<td class="bold">Chain total</td><td>—</td>'
-        f"{''.join(f'<td class=\"bold\">{cell}</td>' for cell in chain_history_cells)}"
-        f"{mom_td(series[-1]['delivered'], series[-2]['delivered']) if month > 1 else '<td>—</td>'}"
-        "</tr>"
+        + chain_td_cells
+        + chain_mom_cell
+        + "</tr>"
     )
 
     fail_pairs = []
