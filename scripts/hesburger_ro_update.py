@@ -1208,7 +1208,11 @@ def build_html(original, data):
             css = " class=\"bold\"" if i == len(values) - 1 else ""
             cells.append(f"<td{css}>{text}</td>")
         total = sum(values)
-        return f"<tr><td class=\"bold\">{label}</td>{''.join(cells)}<td class=\"bold\">{fmt_int(total)}</td></tr>"
+        return (
+            f"<tr><td class=\"bold\">{label}</td>"
+            + "".join(cells)
+            + f"<td class=\"bold\">{fmt_int(total)}</td></tr>"
+        )
 
     promo_sorted = sorted(paired, key=lambda pair: pair[0]["campaign"], reverse=True)
     promo_rows = []
@@ -1540,8 +1544,12 @@ def build_html(original, data):
         )
         active_cls = " active" if is_active else ""
         hero_tab_buttons.append(
-            f'<button class="tab{active_cls}" onclick="showMonth(\'{tab_id}\')">'
-            f"{MONTHS[m - 1]} {year}</button>"
+            '<button class="tab'
+            + active_cls
+            + '" onclick="showMonth(\''
+            + tab_id
+            + "')\">"
+            + f"{MONTHS[m - 1]} {year}</button>"
         )
     hero_tabs_html = "\n      ".join(hero_tab_buttons)
     hero_blocks_html = "".join(hero_kpi_blocks)
@@ -1559,7 +1567,7 @@ def build_html(original, data):
             f"Jan–{mtd['end_day']} {MON[mtd['month'] - 1]}", mtd_locs or active_n,
         )
         mtd_button = (
-            f'<button class="tab" onclick="showMonth(\'mtd\')">'
+            '<button class="tab" onclick="showMonth(\'mtd\')">'
             f'{MON[mtd["month"] - 1]} TD</button>'
         )
 
