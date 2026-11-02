@@ -555,14 +555,10 @@ def fetch_queries(session):
     else:
         prev_y, prev_m = year, month - 1
     cur_start, cur_end, cur_label = month_window(year, month)
-    prev_start, prev_end, prev_label = month_window(prev_y, prev_m)
-    cur_part = f"{cur_start} to {cur_end}"
-    prev_part = f"{prev_start} to {prev_end}"
+    _, _, prev_label = month_window(prev_y, prev_m)
     ytd_end_day = calendar.monthrange(year, month)[1]
     ytd_partition = f"{year}/01/01 to {year}/{month:02d}/{ytd_end_day:02d}"
 
-    current_body = location_body(cur_part, cur_label, "monthly")
-    previous_body = location_body(prev_part, prev_label, "monthly")
     ytd_body = {
         "model": "curated_delivery",
         "view": "fact_provider",
@@ -572,13 +568,22 @@ def fetch_queries(session):
         "limit": "24",
     }
 
-    current, endpoint = run_query(session, None, current_body)
-    previous, _ = run_query(session, endpoint, previous_body)
-    ytd, _ = run_query(session, endpoint, ytd_body)
-    if not current:
-        raise RuntimeError(f"Current month query returned no rows for {cur_label}")
-    if not previous:
-        raise RuntimeError(f"Previous month query returned no rows for {prev_label}")
+    monthly = {}
+    endpoint = None
+    for m in range(1, month + 1):
+        start, end, label = month_window(year, m)
+        part = f"{start} to {end}"
+        rows, endpoint = run_query(session, endpoint, location_body(part, label, "monthly"))
+        monthly[m] = rows_to_locs(rows) if rows else []
+        if rows:
+            log(f"Month {label}: {len(rows)} Looker rows")
+        elif m == month:
+            raise RuntimeError(f"Current month query returned no rows for {label}")
+    if month > 1 and not monthly[month - 1]:
+        prev_start, prev_end, prev_label_err = month_window(prev_y, prev_m)
+        raise RuntimeError(f"Previous month query returned no rows for {prev_label_err}")
+
+    ytd, endpoint = run_query(session, endpoint, ytd_body)
     if not ytd:
         raise RuntimeError("YTD query returned no rows")
     sl_current, endpoint = fetch_sl(session, endpoint, cur_label)
@@ -627,8 +632,9 @@ def fetch_queries(session):
         "month": month,
         "prev_year": prev_y,
         "prev_month": prev_m,
-        "current": rows_to_locs(current),
-        "previous": rows_to_locs(previous),
+        "monthly": monthly,
+        "current": monthly[month],
+        "previous": monthly[month - 1] if month > 1 else [],
         "ytd": ytd,
         "mtd": mtd,
         "sl_current": sl_current,
@@ -984,32 +990,54 @@ def build_html(original, data):
     year = data["year"]
     month = data["month"]
     prev_m = data["prev_month"]
-    before_m = 12 if prev_m == 1 else prev_m - 1
     cur_name, prev_name = MONTHS[month - 1], MONTHS[prev_m - 1]
     cur_ab, prev_ab = MON[month - 1], MON[prev_m - 1]
-    before_ab = MON[before_m - 1]
-    month_note = "completed month, refreshes on the 2nd"
+    period_ab = f"Jan–{cur_ab}" if month > 1 else cur_ab
+    period_names = f"January–{cur_name}" if month > 1 else cur_name
+    month_note = "completed months through latest · refreshes on the 2nd"
     ytd_cur_label = f"Jan–{cur_ab}"
     ytd_prev_label = f"Jan–{prev_ab}"
     generated = today.strftime("%d %B %Y").lstrip("0")
 
-    current = {loc["name"]: loc for loc in data["current"]}
-    previous = {loc["name"]: loc for loc in data["previous"]}
-    names = sorted(set(current) | set(previous), key=lambda n: (
-        -(current.get(n) or blank_loc())["delivered"],
-        -(previous.get(n) or blank_loc())["delivered"],
-        n,
-    ))
-    paired = []
+    monthly = data["monthly"]
+    monthly_maps = {m: {loc["name"]: loc for loc in monthly[m]} for m in range(1, month + 1)}
+    all_names = set()
+    for m in range(1, month + 1):
+        all_names.update(monthly_maps[m])
+    names = sorted(
+        all_names,
+        key=lambda n: (-(monthly_maps[month].get(n) or blank_loc())["delivered"], n),
+    )
+    history = []
     for name in names:
-        cur = current.get(name) or finalize(blank_loc() | {"name": name, "city": (previous.get(name) or {}).get("city", "—")})
-        prev = previous.get(name) or finalize(blank_loc() | {"name": name, "city": cur["city"]})
-        if cur["city"] == "—" and prev["city"] != "—":
-            cur["city"] = prev["city"]
+        locs = []
+        city = "—"
+        for m in range(1, month + 1):
+            loc = monthly_maps[m].get(name)
+            if loc:
+                locs.append(loc)
+                if loc["city"] != "—":
+                    city = loc["city"]
+            else:
+                locs.append(finalize(blank_loc() | {"name": name, "city": city}))
+        for loc in locs:
+            if loc["city"] == "—" and city != "—":
+                loc["city"] = city
+        history.append((name, city, locs))
+
+    current = monthly_maps[month]
+    previous = monthly_maps[month - 1] if month > 1 else {}
+    paired = []
+    for _name, _city, locs in history:
+        cur = locs[-1]
+        if month > 1:
+            prev = locs[-2]
+        else:
+            prev = finalize(blank_loc() | {"name": cur["name"], "city": cur["city"]})
         paired.append((cur, prev))
 
     cur_chain = chain(list(current.values()))
-    prev_chain = chain(list(previous.values()))
+    prev_chain = chain(list(previous.values())) if month > 1 else finalize(blank_loc())
     series = ytd_by_month(data["ytd"], year, month)
     ytd_del = sum(item["delivered"] for item in series)
     ytd_gmv = sum(item["gmv"] for item in series)
@@ -1018,17 +1046,6 @@ def build_html(original, data):
     ytd_through_prev = sum(item["delivered"] for item in series[:prev_m])
     ytd_gmv_prev = sum(item["gmv"] for item in series[:prev_m])
 
-    before = series[before_m - 1] if before_m <= len(series) else {"delivered": 0, "gmv": 0, "bolt_plus": 0, "failed": 0}
-    prev_month_chain = series[prev_m - 1]
-    prev_compare = {
-        "delivered": before["delivered"],
-        "gmv": before["gmv"],
-        "aov": (before["gmv"] / before["delivered"]) if before["delivered"] else None,
-        "promo_share": None,
-        "rating": None,
-        "failed": before["failed"],
-        "bolt_plus": before["bolt_plus"],
-    }
     prev_for_hero = {
         "delivered": prev_chain["delivered"],
         "gmv": prev_chain["gmv"],
@@ -1094,6 +1111,33 @@ def build_html(original, data):
             f"<td{fail_css}>{fail_cur}</td>"
             "</tr>"
         )
+
+    history_month_headers = "".join(f"<th>{MON[m - 1]}</th>" for m in range(1, month + 1))
+    history_delivered_rows = []
+    for name, city, locs in history:
+        month_cells = []
+        for loc in locs:
+            val = loc["delivered"]
+            month_cells.append("—" if val <= 0 else fmt_int(val))
+        mom_cell = mom_td(locs[-1]["delivered"], locs[-2]["delivered"]) if month > 1 else "<td>—</td>"
+        history_delivered_rows.append(
+            "<tr>"
+            f'<td class="bold">{esc(name)}</td><td>{esc(city)}</td>'
+            f"{''.join(f'<td>{cell}</td>' for cell in month_cells)}"
+            f"{mom_cell}"
+            "</tr>"
+        )
+    chain_history_cells = []
+    for m in range(1, month + 1):
+        val = series[m - 1]["delivered"]
+        chain_history_cells.append("—" if val <= 0 else fmt_int(val))
+    chain_history_row = (
+        "<tr>"
+        '<td class="bold">Chain total</td><td>—</td>'
+        f"{''.join(f'<td class=\"bold\">{cell}</td>' for cell in chain_history_cells)}"
+        f"{mom_td(series[-1]['delivered'], series[-2]['delivered']) if month > 1 else '<td>—</td>'}"
+        "</tr>"
+    )
 
     fail_pairs = []
     for cur, prev in paired:
@@ -1453,14 +1497,50 @@ def build_html(original, data):
 
     prev_aov = prev_for_hero["aov"]
     cur_aov = cur_chain["aov"]
-    hero_prev = hero_kpis(
-        "h-jul", True, prev_for_hero, prev_compare, before_ab,
-        ytd_through_prev, ytd_gmv_prev, ytd_prev_label, active_n,
-    )
-    hero_cur = hero_kpis(
-        "h-aug", False, cur_chain, prev_chain, prev_ab,
-        ytd_del, ytd_gmv, ytd_cur_label, active_n,
-    )
+    empty_compare = {
+        "delivered": 0,
+        "gmv": 0,
+        "aov": None,
+        "promo_share": None,
+        "rating": None,
+        "failed": 0,
+        "bolt_plus": 0,
+    }
+    hero_tab_buttons = []
+    hero_kpi_blocks = []
+    for m in range(1, month + 1):
+        tab_id = f"m{m:02d}"
+        chain_m = chain(monthly[m])
+        if m > 1:
+            compare_m = chain(monthly[m - 1])
+            vs_label = MON[m - 2]
+        else:
+            compare_m = empty_compare
+            vs_label = ""
+        ytd_d = sum(item["delivered"] for item in series[:m])
+        ytd_g = sum(item["gmv"] for item in series[:m])
+        ytd_lab = f"Jan–{MON[m - 1]}"
+        is_active = m == month
+        hero_kpi_blocks.append(
+            hero_kpis(
+                f"h-{tab_id}",
+                is_active,
+                chain_m,
+                compare_m,
+                vs_label,
+                ytd_d,
+                ytd_g,
+                ytd_lab,
+                active_n,
+            )
+        )
+        active_cls = " active" if is_active else ""
+        hero_tab_buttons.append(
+            f'<button class="tab{active_cls}" onclick="showMonth(\'{tab_id}\')">'
+            f"{MONTHS[m - 1]} {year}</button>"
+        )
+    hero_tabs_html = "\n      ".join(hero_tab_buttons)
+    hero_blocks_html = "".join(hero_kpi_blocks)
     hero_mtd = ""
     mtd_button = ""
     mtd = data.get("mtd")
@@ -1479,14 +1559,21 @@ def build_html(original, data):
             f'{MON[mtd["month"] - 1]} TD</button>'
         )
 
+    styles = style_block(original)
+    if "flex-wrap" not in styles and ".tab-bar{" in styles:
+        styles = styles.replace(
+            ".tab-bar{display:flex;gap:4px;margin-bottom:28px}",
+            ".tab-bar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:28px}",
+        )
+
     page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hesburger × Bolt Food — {prev_ab}–{cur_ab} {year} · Romania</title>
+<title>Hesburger × Bolt Food — {period_ab} {year} · Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-{style_block(original)}
+{styles}
 </head>
 <body>
 
@@ -1511,14 +1598,12 @@ def build_html(original, data):
   <div class="wrap">
     <div class="hero-pill">Bolt Food Romania · Partner Analytics</div>
     <h1>Hesburger × Bolt Food<br>Performance Report</h1>
-    <p class="hero-sub">{esc(loc_label)} locations · {esc(city_list)} · {prev_ab}–{cur_ab} {year} · Generated on {esc(generated)}</p>
+    <p class="hero-sub">{esc(loc_label)} locations · {esc(city_list)} · {period_ab} {year} · Generated on {esc(generated)}</p>
     <div class="tab-bar">
-      <button class="tab active" onclick="showMonth('jul')">{prev_name} {data['prev_year']}</button>
-      <button class="tab" onclick="showMonth('aug')">{cur_name} {year}</button>
+      {hero_tabs_html}
       {mtd_button}
     </div>
-    {hero_prev}
-    {hero_cur}
+    {hero_blocks_html}
     {hero_mtd}
   </div>
 </div>
@@ -1528,15 +1613,29 @@ def build_html(original, data):
 <div id="overview"></div>
 <div class="wrap"><div class="section">
   <p class="sec-title">Chain overview</p>
-  <p class="sec-sub">All locations · {prev_ab} vs {cur_ab} {year} · {esc(month_note)}</p>
+  <p class="sec-sub">All locations · {period_ab} {year} · {esc(month_note)}</p>
   <div class="kpi-row">
-    {card(f"Delivered — {prev_ab}", fmt_int(prev_chain['delivered']), trend_text(prev_chain['delivered'], before['delivered'], 'pct', True, before_ab)[0], trend_text(prev_chain['delivered'], before['delivered'], 'pct', True, before_ab)[2])}
     {card(f"Delivered — {cur_ab}", fmt_int(cur_chain['delivered']), deliv_l, deliv_card)}
     {card(f"AOV {prev_ab} / {cur_ab}", (f"{prev_aov:.2f} / {cur_aov:.2f} €" if prev_aov and cur_aov else "—"), aov_l, aov_card)}
     {card(f"Fail rate {prev_ab} / {cur_ab}", f"{fail_prev:.1f}% / {fail_now:.1f}%", fail_l, fail_card)}
     {card(f"Bolt+ share {prev_ab} / {cur_ab}", f"{plus_prev:.1f}% / {plus_now:.1f}%", f"{fmt_int(prev_chain['bolt_plus'])} → {fmt_int(cur_chain['bolt_plus'])}", "kneu")}
     {card(f"YTD delivered {ytd_cur_label}", fmt_int(ytd_del), f"{fmt_eur(ytd_gmv)} YTD", "kneu")}
   </div>
+  <p class="sec-sub" style="margin-top:22px">Delivered orders by month — full {year} history per location</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Location</th><th>City</th>
+        {history_month_headers}
+        <th>MoM ({cur_ab})</th>
+      </tr></thead>
+      <tbody>
+        {chain_history_row}
+        {''.join(history_delivered_rows)}
+      </tbody>
+    </table>
+  </div>
+  <p class="sec-sub" style="margin-top:22px">Month-on-month detail — {prev_ab} vs {cur_ab} {year}</p>
   <div class="tbl-wrap">
     <table>
       <thead><tr>
@@ -1768,19 +1867,21 @@ def build_html(original, data):
 </div></div>
 
 <footer class="footer">
-  Bolt Food Romania × Hesburger · Confidential report · {prev_name}–{cur_name} {year}<br>
+  Bolt Food Romania × Hesburger · Confidential report · {period_names} {year}<br>
   Account Management Team · Data: Bolt Looker (curated_delivery / fact_provider · incentives / sponsored listings)<br>
   Generated on {esc(generated)}
 </footer>
 
 <script>
 function showMonth(m){{
-  document.getElementById('h-jul').style.display = m==='jul'?'grid':'none';
-  document.getElementById('h-aug').style.display = m==='aug'?'grid':'none';
+  document.querySelectorAll('.hero-kpis').forEach(function(el){{
+    el.style.display = el.id === 'h-' + m ? 'grid' : 'none';
+  }});
   var hm = document.getElementById('h-mtd');
   if (hm) hm.style.display = m==='mtd'?'grid':'none';
-  document.querySelectorAll('.tab').forEach((t,i)=>{{
-    t.classList.toggle('active',(i===0&&m==='jul')||(i===1&&m==='aug')||(i===2&&m==='mtd'));
+  document.querySelectorAll('.tab').forEach(function(t){{
+    var onclick = t.getAttribute('onclick') || '';
+    t.classList.toggle('active', onclick.indexOf("'"+m+"'") !== -1);
   }});
 }}
 </script>
@@ -1819,8 +1920,8 @@ def main():
     session = looker_session()
     data = fetch_queries(session)
     log(
-        f"Months {MON[data['prev_month']-1]} vs {MON[data['month']-1]} {data['year']}: "
-        f"{len(data['current'])} current locations, {len(data['previous'])} previous, "
+        f"YTD through {MON[data['month'] - 1]} {data['year']}: "
+        f"{data['month']} monthly location queries, "
         f"{len(data['ytd'])} YTD rows"
     )
     if TEMPLATE_FILE.exists():
