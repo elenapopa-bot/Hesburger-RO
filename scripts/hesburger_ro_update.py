@@ -607,16 +607,20 @@ def fetch_queries(session):
         mtd_rows, endpoint = run_query(session, endpoint, location_body(mtd_part, mtd_label, "daily"))
         cmp_rows, _ = run_query(session, endpoint, location_body(cmp_part, cur_label, "daily"))
         if not mtd_rows:
-            raise RuntimeError(f"Month-to-date query returned no rows for {mtd_label}")
-        mtd = {
-            "year": yesterday.year,
-            "month": yesterday.month,
-            "end_day": end_day,
-            "compare_end": cmp_end,
-            "current": rows_to_locs(mtd_rows),
-            "compare": rows_to_locs(cmp_rows),
-        }
-        log(f"Oct-style TD 1–{end_day} {mtd_label} vs 1–{cmp_end} {cur_label}: {len(mtd_rows)} rows")
+            log(
+                f"Month-to-date skipped: no rows for {mtd_label} "
+                f"(early month or Looker lag); report continues without TD tab"
+            )
+        else:
+            mtd = {
+                "year": yesterday.year,
+                "month": yesterday.month,
+                "end_day": end_day,
+                "compare_end": cmp_end,
+                "current": rows_to_locs(mtd_rows),
+                "compare": rows_to_locs(cmp_rows) if cmp_rows else [],
+            }
+            log(f"TD 1–{end_day} {mtd_label} vs 1–{cmp_end} {cur_label}: {len(mtd_rows)} rows")
     return {
         "today": today,
         "year": year,
