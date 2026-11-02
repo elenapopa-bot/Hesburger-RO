@@ -21,7 +21,15 @@ Pulls metrics from Looker (Chrome session cookies) and publishes `index.html` to
    ```bash
    mkdir -p ~/scripts
    cp scripts/hesburger_ro_template.html ~/scripts/hesburger_ro_template.html
-   cp scripts/hesburger_ro_update.py ~/scripts/hesburger_ro_update.py
+   ```
+
+   **Update script from GitHub** (use a **commit pin** — `raw.../main/` can lag on CDN and serve an old broken copy):
+
+   ```bash
+   curl -fSL -o ~/scripts/hesburger_ro_update.py \
+     "https://raw.githubusercontent.com/elenapopa-bot/Hesburger-RO/5758a30/scripts/hesburger_ro_update.py"
+   grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py   # must show py39-v3 or newer
+   python3 -m py_compile ~/scripts/hesburger_ro_update.py && echo OK
    chmod +x ~/scripts/hesburger_ro_update.py
    ```
 
