@@ -20,30 +20,31 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-11-all-venues-v3"
+SCRIPT_VERSION = "2026-11-12-ro-14-venues-v1"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
 TEMPLATE_FILE = Path.home() / "scripts" / "hesburger_ro_template.html"
 REPO_TEMPLATE_FILE = SCRIPT_DIR / "hesburger_ro_template.html"
 
-# Romania venues on Bolt Food. Do not use brand_name alone — it pulls all countries.
-# Override extras: HESBURGER_EXTRA_PROVIDER_IDS=123,456 in ~/.hesburger_ro_env (export line).
-PROVIDER_IDS_CORE = (
-    "154778,154770,155192,135583,172927,173425,"
-    "135582,135581,135580,170143,190389,135579"
+# Romania venues on Bolt Food (14 active). Do not use brand_name alone — all countries.
+# Full replace: HESBURGER_PROVIDER_IDS=...  Append: HESBURGER_EXTRA_PROVIDER_IDS=... in ~/.hesburger_ro_env
+PROVIDER_IDS_RO = (
+    "135579,135580,135581,135582,135583,"
+    "154770,154778,155192,170143,172927,173425,"
+    "190389,802700,4522627"
 )
-# Brasov + Liberty (confirm in Looker if names still missing).
-PROVIDER_IDS_EXTRA_DEFAULT = "165087,176126"
 MAX_LOCATION_ROWS = 32
 F_PROVIDER_ID = "dim_provider_common.provider_id"
 
 
 def provider_ids_filter():
+    override = os.environ.get("HESBURGER_PROVIDER_IDS", "").strip()
+    if override:
+        return override
     extra = os.environ.get("HESBURGER_EXTRA_PROVIDER_IDS", "").strip()
-    if not extra:
-        extra = PROVIDER_IDS_EXTRA_DEFAULT
-    return PROVIDER_IDS_CORE + ("," + extra if extra else "")
+    base = PROVIDER_IDS_RO
+    return base + ("," + extra if extra else "")
 
 LOC_FIELDS = [
     "dim_provider_common.provider_name",
