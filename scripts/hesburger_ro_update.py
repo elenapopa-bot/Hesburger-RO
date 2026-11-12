@@ -20,22 +20,30 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-11-all-venues-v2"
+SCRIPT_VERSION = "2026-11-11-all-venues-v3"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
 TEMPLATE_FILE = Path.home() / "scripts" / "hesburger_ro_template.html"
 REPO_TEMPLATE_FILE = SCRIPT_DIR / "hesburger_ro_template.html"
 
-# Legacy hard-coded list (12 venues). Prefer brand+country filter so new openings
-# (e.g. Brasov, Liberty) are included without editing IDs.
-PROVIDER_IDS_LEGACY = (
+# Romania venues on Bolt Food. Do not use brand_name alone — it pulls all countries.
+# Override extras: HESBURGER_EXTRA_PROVIDER_IDS=123,456 in ~/.hesburger_ro_env (export line).
+PROVIDER_IDS_CORE = (
     "154778,154770,155192,135583,172927,173425,"
     "135582,135581,135580,170143,190389,135579"
 )
-F_BRAND = "dim_provider_common.brand_name"
-# admin_system_country.* works on incentives explores only, not fact_provider.
+# Brasov + Liberty (confirm in Looker if names still missing).
+PROVIDER_IDS_EXTRA_DEFAULT = "165087,176126"
+MAX_LOCATION_ROWS = 32
 F_PROVIDER_ID = "dim_provider_common.provider_id"
+
+
+def provider_ids_filter():
+    extra = os.environ.get("HESBURGER_EXTRA_PROVIDER_IDS", "").strip()
+    if not extra:
+        extra = PROVIDER_IDS_EXTRA_DEFAULT
+    return PROVIDER_IDS_CORE + ("," + extra if extra else "")
 
 LOC_FIELDS = [
     "dim_provider_common.provider_name",
@@ -408,13 +416,21 @@ def month_window(year, month):
 
 
 def base_filters(partition, grain="monthly"):
-    """Scope to HESBURGER on fact_provider (Romania-only partner set via brand)."""
     return {
-        F_BRAND: "HESBURGER",
+        "fact_additive.provider_id": provider_ids_filter(),
         "fact_provider_non_additive.time_granularity": grain,
         "fact_provider_non_additive.entity_granularity": "provider",
         "fact_provider_non_additive.metric_partition_date": partition,
     }
+
+
+def guard_row_count(rows, label):
+    n = len(rows)
+    if n > MAX_LOCATION_ROWS:
+        raise RuntimeError(
+            f"{label}: {n} Looker rows (expected ≤{MAX_LOCATION_ROWS} RO venues). "
+            "Check fact_additive.provider_id filter — do not use brand-only filter."
+        )
 
 
 def reporting_month(today):
@@ -557,6 +573,7 @@ def week_body(week_start):
     }
 
 def fetch_queries(session):
+    log(f"Looker provider_id filter: {provider_ids_filter()}")
     today = datetime.now()
     year, month = reporting_month(today)
     if month == 1:
@@ -583,6 +600,7 @@ def fetch_queries(session):
         start, end, label = month_window(year, m)
         part = f"{start} to {end}"
         rows, endpoint = run_query(session, endpoint, location_body(part, label, "monthly"))
+        guard_row_count(rows, label)
         monthly[m] = rows_to_locs(rows) if rows else []
         if rows:
             names = sorted({clean_name(r.get(F_NAME)) for r in rows})
@@ -615,7 +633,9 @@ def fetch_queries(session):
     week_start = last_complete_week(today)
     prev_week_start = week_start - timedelta(days=7)
     week_rows, endpoint = run_query(session, endpoint, week_body(week_start))
+    guard_row_count(week_rows, f"week {week_start}")
     prev_week_rows, _ = run_query(session, endpoint, week_body(prev_week_start))
+    guard_row_count(prev_week_rows, f"week {prev_week_start}")
     if not week_rows:
         raise RuntimeError(f"Weekly query returned no rows for {week_start}")
     if not prev_week_rows:
