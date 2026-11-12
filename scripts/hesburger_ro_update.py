@@ -20,17 +20,21 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-02-py39-v5"
+SCRIPT_VERSION = "2026-11-11-all-venues-v1"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
 TEMPLATE_FILE = Path.home() / "scripts" / "hesburger_ro_template.html"
 REPO_TEMPLATE_FILE = SCRIPT_DIR / "hesburger_ro_template.html"
 
-PROVIDER_IDS = (
+# Legacy hard-coded list (12 venues). Prefer brand+country filter so new openings
+# (e.g. Brasov, Liberty) are included without editing IDs.
+PROVIDER_IDS_LEGACY = (
     "154778,154770,155192,135583,172927,173425,"
     "135582,135581,135580,170143,190389,135579"
 )
+F_BRAND = "dim_provider_common.brand_name"
+F_COUNTRY = "admin_system_country.country_name"
 
 LOC_FIELDS = [
     "dim_provider_common.provider_name",
@@ -403,7 +407,8 @@ def month_window(year, month):
 
 def base_filters(partition, grain="monthly"):
     return {
-        "fact_additive.provider_id": PROVIDER_IDS,
+        F_BRAND: "HESBURGER",
+        F_COUNTRY: "Romania",
         "fact_provider_non_additive.time_granularity": grain,
         "fact_provider_non_additive.entity_granularity": "provider",
         "fact_provider_non_additive.metric_partition_date": partition,
@@ -488,7 +493,7 @@ def location_body(partition, month_label, grain):
             F_MONTH: month_label,
         },
         "sorts": [F_DELIV + " desc"],
-        "limit": "500",
+        "limit": "1000",
     }
 
 
@@ -546,7 +551,7 @@ def week_body(week_start):
             F_WEEK: week_start.strftime("%Y-%m-%d"),
         },
         "sorts": [F_DELIV + " desc"],
-        "limit": "500",
+        "limit": "1000",
     }
 
 def fetch_queries(session):
@@ -578,12 +583,16 @@ def fetch_queries(session):
         rows, endpoint = run_query(session, endpoint, location_body(part, label, "monthly"))
         monthly[m] = rows_to_locs(rows) if rows else []
         if rows:
-            log(f"Month {label}: {len(rows)} Looker rows")
+            venues = sorted({clean_name(r.get(F_NAME)) for r in rows})
+            log(f"Month {label}: {len(rows)} Looker rows · {', '.join(venues)}")
         elif m == month:
             raise RuntimeError(f"Current month query returned no rows for {label}")
     if month > 1 and not monthly[month - 1]:
         prev_start, prev_end, prev_label_err = month_window(prev_y, prev_m)
         raise RuntimeError(f"Previous month query returned no rows for {prev_label_err}")
+
+    roster = sorted({loc["name"] for loc in monthly[month]})
+    log(f"Venue roster for {cur_label}: {len(roster)} locations — {', '.join(roster)}")
 
     ytd, endpoint = run_query(session, endpoint, ytd_body)
     if not ytd:
@@ -1063,7 +1072,10 @@ def build_html(original, data):
     active_n = len(active)
     loc_label = f"{active_n}–{total_locs}" if active_n != total_locs else str(active_n)
     # Hero subtitle city order/naming follows the partner artifact.
-    hero_order = ["Bucharest", "Galați", "Craiova", "Buzău", "Rm. Vâlcea", "Brăila", "Iași", "Brașov", "Pitești"]
+    hero_order = [
+        "Bucharest", "Galați", "Craiova", "Buzău", "Rm. Vâlcea",
+        "Brăila", "Iași", "Brașov", "Pitești",
+    ]
     hero_names = {"Rm. Vâlcea": "Râmnicu Vâlcea"}
     present = {cur["city"] for cur, _prev in paired if cur["city"] != "—"}
     ordered = [c for c in hero_order if c in present] + sorted(c for c in present if c not in hero_order)
