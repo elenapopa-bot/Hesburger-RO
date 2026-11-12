@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-11-all-venues-v1"
+SCRIPT_VERSION = "2026-11-11-all-venues-v2"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -34,10 +34,12 @@ PROVIDER_IDS_LEGACY = (
     "135582,135581,135580,170143,190389,135579"
 )
 F_BRAND = "dim_provider_common.brand_name"
-F_COUNTRY = "admin_system_country.country_name"
+# admin_system_country.* works on incentives explores only, not fact_provider.
+F_PROVIDER_ID = "dim_provider_common.provider_id"
 
 LOC_FIELDS = [
     "dim_provider_common.provider_name",
+    F_PROVIDER_ID,
     "dim_delivery_city.city_name",
     "fact_additive.courier_delivered_orders_count",
     "fact_additive.failed_orders_count",
@@ -406,9 +408,9 @@ def month_window(year, month):
 
 
 def base_filters(partition, grain="monthly"):
+    """Scope to HESBURGER on fact_provider (Romania-only partner set via brand)."""
     return {
         F_BRAND: "HESBURGER",
-        F_COUNTRY: "Romania",
         "fact_provider_non_additive.time_granularity": grain,
         "fact_provider_non_additive.entity_granularity": "provider",
         "fact_provider_non_additive.metric_partition_date": partition,
@@ -583,8 +585,19 @@ def fetch_queries(session):
         rows, endpoint = run_query(session, endpoint, location_body(part, label, "monthly"))
         monthly[m] = rows_to_locs(rows) if rows else []
         if rows:
-            venues = sorted({clean_name(r.get(F_NAME)) for r in rows})
-            log(f"Month {label}: {len(rows)} Looker rows · {', '.join(venues)}")
+            names = sorted({clean_name(r.get(F_NAME)) for r in rows})
+            pids = sorted(
+                {
+                    str(int(float(r.get(F_PROVIDER_ID))))
+                    for r in rows
+                    if r.get(F_PROVIDER_ID) not in (None, "")
+                },
+                key=int,
+            )
+            log(
+                f"Month {label}: {len(rows)} rows · {', '.join(names)}"
+                + (f" · provider_ids: {', '.join(pids)}" if pids else "")
+            )
         elif m == month:
             raise RuntimeError(f"Current month query returned no rows for {label}")
     if month > 1 and not monthly[month - 1]:
