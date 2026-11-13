@@ -161,7 +161,7 @@ tbody tr:hover{background:var(--bg)}
 
 /* footer */
 .footer{text-align:center;padding:36px 28px;font-size:11px;color:var(--ink-l);border-top:1px solid var(--border);margin-top:40px}
-</style>
+.tab-legend{font-size:11px;color:var(--ink-l);margin:16px 0 6px;font-weight:500}.tab-bar-quarters{margin-bottom:24px}.tab-quarter{min-width:4.5rem}</style>
 </head>
 <body>
 
@@ -186,7 +186,7 @@ tbody tr:hover{background:var(--bg)}
   <div class="wrap">
     <div class="hero-pill">Bolt Food Romania · Partner Analytics</div>
     <h1>Hesburger × Bolt Food<br>Performance Report</h1>
-    <p class="hero-sub">14 locations · Bucharest, Galați, Craiova, Buzău, Râmnicu Vâlcea, Brăila, Iași, Brașov, Pitești · Jan–Oct 2026 · Generated on 12 November 2026</p>
+    <p class="hero-sub">14 locations · Bucharest, Galați, Craiova, Buzău, Râmnicu Vâlcea, Brăila, Iași, Brașov, Pitești · Jan–Oct 2026 · Generated on 13 November 2026</p>
     <div class="tab-bar">
       <button class="tab" onclick="showMonth('m01')">January 2026</button>
       <button class="tab" onclick="showMonth('m02')">February 2026</button>
@@ -200,6 +200,13 @@ tbody tr:hover{background:var(--bg)}
       <button class="tab active" onclick="showMonth('m10')">October 2026</button>
       <button class="tab" onclick="showMonth('mtd')">Nov TD</button>
     </div>
+    <p class="tab-legend">Quarters — tap for 3-month chain totals (vs prior quarter &amp; 2025)</p>
+    <div class="tab-bar tab-bar-quarters">
+      <button class="tab tab-quarter" onclick="showMonth('q1')">Q1 2026</button>
+      <button class="tab tab-quarter" onclick="showMonth('q2')">Q2 2026</button>
+      <button class="tab tab-quarter" onclick="showMonth('q3')">Q3 2026</button>
+      <button class="tab tab-quarter" onclick="showMonth('q4')">Q4 (Oct) 2026</button>
+    </div>
     
     <div class="hero-kpis" id="h-m01" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">2,222</div><div class="hero-kpi-d neu">—</div></div>
@@ -208,6 +215,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">96.9%</div><div class="hero-kpi-d neu">—</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.22 ★</div><div class="hero-kpi-d neu">14 locations</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Jan</div><div class="hero-kpi-v">2,222</div><div class="hero-kpi-d neu">31,534 €</div></div>
+      
     </div>
     <div class="hero-kpis" id="h-m02" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">3,390</div><div class="hero-kpi-d up">▲52.6% vs Jan</div></div>
@@ -216,6 +224,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">101.9%</div><div class="hero-kpi-d up">▲5.0pp vs Jan</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.26 ★</div><div class="hero-kpi-d up">▲0.04 vs Jan</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Feb</div><div class="hero-kpi-v">5,612</div><div class="hero-kpi-d neu">83,821 €</div></div>
+      
     </div>
     <div class="hero-kpis" id="h-m03" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">3,657</div><div class="hero-kpi-d up">▲7.9% vs Feb</div></div>
@@ -224,6 +233,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">100.1%</div><div class="hero-kpi-d dn">▼1.8pp vs Feb</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.30 ★</div><div class="hero-kpi-d up">▲0.04 vs Feb</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Mar</div><div class="hero-kpi-v">9,269</div><div class="hero-kpi-d neu">138,729 €</div></div>
+      
     </div>
     <div class="hero-kpis" id="h-m04" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">2,977</div><div class="hero-kpi-d dn">▼18.6% vs Mar</div></div>
@@ -232,6 +242,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">85.3%</div><div class="hero-kpi-d dn">▼14.8pp vs Mar</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.35 ★</div><div class="hero-kpi-d up">▲0.05 vs Mar</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Apr</div><div class="hero-kpi-v">12,246</div><div class="hero-kpi-d neu">180,899 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲62.9% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲43.0% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m05" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">2,421</div><div class="hero-kpi-d dn">▼18.7% vs Apr</div></div>
@@ -240,6 +251,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">45.8%</div><div class="hero-kpi-d dn">▼39.4pp vs Apr</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.24 ★</div><div class="hero-kpi-d dn">▼0.11 vs Apr</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–May</div><div class="hero-kpi-v">14,667</div><div class="hero-kpi-d neu">214,973 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲120.5% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲101.4% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m06" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">3,276</div><div class="hero-kpi-d up">▲35.3% vs May</div></div>
@@ -248,6 +260,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">81.3%</div><div class="hero-kpi-d up">▲35.4pp vs May</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.15 ★</div><div class="hero-kpi-d dn">▼0.09 vs May</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Jun</div><div class="hero-kpi-v">17,943</div><div class="hero-kpi-d neu">260,574 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲282.3% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲248.1% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m07" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">2,734</div><div class="hero-kpi-d dn">▼16.5% vs Jun</div></div>
@@ -256,6 +269,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">70.3%</div><div class="hero-kpi-d dn">▼11.0pp vs Jun</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.29 ★</div><div class="hero-kpi-d up">▲0.14 vs Jun</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Jul</div><div class="hero-kpi-v">20,677</div><div class="hero-kpi-d neu">298,684 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲194.9% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲159.4% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m08" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">3,464</div><div class="hero-kpi-d up">▲26.7% vs Jul</div></div>
@@ -264,6 +278,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">74.9%</div><div class="hero-kpi-d up">▲4.7pp vs Jul</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.34 ★</div><div class="hero-kpi-d up">▲0.05 vs Jul</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Aug</div><div class="hero-kpi-v">24,141</div><div class="hero-kpi-d neu">347,875 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲54.9% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲30.9% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m09" style="display:none">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">4,498</div><div class="hero-kpi-d up">▲29.8% vs Aug</div></div>
@@ -272,6 +287,7 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">81.1%</div><div class="hero-kpi-d up">▲6.2pp vs Aug</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.34 ★</div><div class="hero-kpi-d neu">= Aug</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Sep</div><div class="hero-kpi-v">28,639</div><div class="hero-kpi-d neu">409,697 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲241.5% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲185.1% revenue</div></div>
     </div>
     <div class="hero-kpis" id="h-m10">
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">4,749</div><div class="hero-kpi-d up">▲5.6% vs Sep</div></div>
@@ -280,15 +296,53 @@ tbody tr:hover{background:var(--bg)}
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">71.8%</div><div class="hero-kpi-d dn">▼9.3pp vs Sep</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.30 ★</div><div class="hero-kpi-d dn">▼0.04 vs Sep</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Oct</div><div class="hero-kpi-v">33,388</div><div class="hero-kpi-d neu">473,706 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲210.2% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲173.3% revenue</div></div>
+    </div>
+    <div class="hero-kpis" id="h-q1" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">9,269</div><div class="hero-kpi-d neu">—</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">138,729 €</div><div class="hero-kpi-d neu">—</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">14.97 €</div><div class="hero-kpi-d neu">—</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">100.0%</div><div class="hero-kpi-d neu">—</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.27 ★</div><div class="hero-kpi-d neu">14 locations</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–Mar</div><div class="hero-kpi-v">9,269</div><div class="hero-kpi-d neu">138,729 €</div></div>
+      
+    </div>
+    <div class="hero-kpis" id="h-q2" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">8,674</div><div class="hero-kpi-d dn">▼6.4% vs Q1</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">121,845 €</div><div class="hero-kpi-d dn">▼12.2% vs Q1</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">14.05 €</div><div class="hero-kpi-d dn">▼6.1% vs Q1</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">72.8%</div><div class="hero-kpi-d dn">▼27.3pp vs Q1</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.25 ★</div><div class="hero-kpi-d dn">▼0.02 vs Q1</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Apr–Jun</div><div class="hero-kpi-v">8,674</div><div class="hero-kpi-d neu">121,845 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲129.3% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲104.7% revenue</div></div>
+    </div>
+    <div class="hero-kpis" id="h-q3" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">10,696</div><div class="hero-kpi-d up">▲23.3% vs Q2</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">149,123 €</div><div class="hero-kpi-d up">▲22.4% vs Q2</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.94 €</div><div class="hero-kpi-d dn">▼0.7% vs Q2</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">76.3%</div><div class="hero-kpi-d up">▲3.6pp vs Q2</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.33 ★</div><div class="hero-kpi-d up">▲0.08 vs Q2</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jul–Sep</div><div class="hero-kpi-v">10,696</div><div class="hero-kpi-d neu">149,123 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲138.8% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲101.7% revenue</div></div>
+    </div>
+    <div class="hero-kpis" id="h-q4" style="display:none">
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">4,749</div><div class="hero-kpi-d dn">▼55.6% vs Q3</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">64,009 €</div><div class="hero-kpi-d dn">▼57.1% vs Q3</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.48 €</div><div class="hero-kpi-d dn">▼3.3% vs Q3</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">71.8%</div><div class="hero-kpi-d dn">▼4.6pp vs Q3</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.30 ★</div><div class="hero-kpi-d dn">▼0.03 vs Q3</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Oct–Oct</div><div class="hero-kpi-v">4,749</div><div class="hero-kpi-d neu">64,009 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div><div class="hero-kpi-v">▲210.2% vs 2025</div><div class="hero-kpi-d up">vs 2025 · ▲173.3% revenue</div></div>
     </div>
     
     <div class="hero-kpis" id="h-mtd" style="display:none">
-      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">1,619</div><div class="hero-kpi-d up">▲6.8% vs 1–11 Oct</div></div>
-      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">21,450 €</div><div class="hero-kpi-d up">▲3.7% vs 1–11 Oct</div></div>
-      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.25 €</div><div class="hero-kpi-d dn">▼2.9% vs 1–11 Oct</div></div>
-      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">68.7%</div><div class="hero-kpi-d dn">▼8.8pp vs 1–11 Oct</div></div>
-      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.25 ★</div><div class="hero-kpi-d dn">▼0.09 vs 1–11 Oct</div></div>
-      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–11 Nov</div><div class="hero-kpi-v">35,007</div><div class="hero-kpi-d neu">495,157 €</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">1,790</div><div class="hero-kpi-d up">▲5.3% vs 1–12 Oct</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Revenue</div><div class="hero-kpi-v">23,935 €</div><div class="hero-kpi-d up">▲3.1% vs 1–12 Oct</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">AOV</div><div class="hero-kpi-v">13.37 €</div><div class="hero-kpi-d dn">▼2.1% vs 1–12 Oct</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">69.6%</div><div class="hero-kpi-d dn">▼8.3pp vs 1–12 Oct</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">4.26 ★</div><div class="hero-kpi-d dn">▼0.06 vs 1–12 Oct</div></div>
+      <div class="hero-kpi"><div class="hero-kpi-l">YTD Jan–12 Nov</div><div class="hero-kpi-v">35,178</div><div class="hero-kpi-d neu">497,642 €</div></div>
+      
     </div>
   </div>
 </div>
@@ -335,6 +389,20 @@ tbody tr:hover{background:var(--bg)}
     <div class="kcard"><div class="kcard-l">Fail rate Sep / Oct</div><div class="kcard-v">1.2% / 1.3%</div><div class="kcard-d kneu">Stable</div></div>
     <div class="kcard"><div class="kcard-l">Bolt+ share Sep / Oct</div><div class="kcard-v">15.6% / 13.0%</div><div class="kcard-d kneu">703 → 619</div></div>
     <div class="kcard"><div class="kcard-l">YTD delivered Jan–Oct</div><div class="kcard-v">33,388</div><div class="kcard-d kneu">473,706 € YTD</div></div>
+    <div class="kcard"><div class="kcard-l">YTD YoY vs 2025</div><div class="kcard-v">9,793</div><div class="kcard-d kup">▲240.9% vs 2025</div></div>
+    <div class="kcard"><div class="kcard-l">Oct YoY vs 2025</div><div class="kcard-v">1,531</div><div class="kcard-d kup">▲210.2% vs 2025</div></div>
+  </div>
+  <p class="sec-sub" style="margin-top:22px">Quarter totals — 2026 vs 2025</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Quarter</th><th>Months</th>
+        <th>Delivered 2025</th><th>Delivered 2026</th><th>Revenue 2026</th><th>YoY</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="bold">Q1</td><td>Jan–Mar 2026</td><td>—</td><td class="bold">9,269</td><td class="bold">138,729 €</td><td>—</td></tr><tr><td class="bold">Q2</td><td>Apr–Jun 2026</td><td>3,782</td><td class="bold">8,674</td><td class="bold">121,845 €</td><td>▲129.3% vs 2025</td></tr><tr><td class="bold">Q3</td><td>Jul–Sep 2026</td><td>4,480</td><td class="bold">10,696</td><td class="bold">149,123 €</td><td>▲138.8% vs 2025</td></tr><tr><td class="bold">Q4 (Oct)</td><td>Oct–Oct 2026</td><td>1,531</td><td class="bold">4,749</td><td class="bold">64,009 €</td><td>▲210.2% vs 2025</td></tr>
+      </tbody>
+    </table>
   </div>
   <p class="sec-sub" style="margin-top:22px">Delivered orders by month — full 2026 history per location</p>
   <div class="tbl-wrap">
@@ -346,6 +414,7 @@ tbody tr:hover{background:var(--bg)}
       </tr></thead>
       <tbody>
         <tr><td class="bold">Chain total</td><td>—</td><td class="bold">2,222</td><td class="bold">3,390</td><td class="bold">3,657</td><td class="bold">2,977</td><td class="bold">2,421</td><td class="bold">3,276</td><td class="bold">2,734</td><td class="bold">3,464</td><td class="bold">4,498</td><td class="bold">4,749</td><td class="tg">▲5.6%</td></tr>
+        <tr><td class="bold">Chain total 2025</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1,827</td><td>1,098</td><td>857</td><td>927</td><td>2,236</td><td>1,317</td><td>1,531</td><td class="tg">▲210.2%</td></tr>
         <tr><td class="bold">Buzau Shopping City Mall</td><td>Buzău</td><td>87</td><td>177</td><td>282</td><td>182</td><td>218</td><td>274</td><td>340</td><td>490</td><td>682</td><td>850</td><td class="tg">▲24.6%</td></tr><tr><td class="bold">Ramnicu Valcea</td><td>Rm. Vâlcea</td><td>177</td><td>334</td><td>402</td><td>273</td><td>214</td><td>294</td><td>290</td><td>406</td><td>494</td><td>574</td><td class="tg">▲16.2%</td></tr><tr><td class="bold">Galati Cosbuc</td><td>Galați</td><td>334</td><td>495</td><td>510</td><td>404</td><td>354</td><td>374</td><td>402</td><td>441</td><td>541</td><td>569</td><td class="tg">▲5.2%</td></tr><tr><td class="bold">Craiova Electroputere</td><td>Craiova</td><td>278</td><td>375</td><td>415</td><td>359</td><td>342</td><td>501</td><td>324</td><td>449</td><td>585</td><td>546</td><td class="tr">▼6.7%</td></tr><tr><td class="bold">Afi Cotroceni</td><td>Bucharest</td><td>503</td><td>651</td><td>688</td><td>527</td><td>337</td><td>485</td><td>317</td><td>363</td><td>515</td><td>400</td><td class="tr">▼22.3%</td></tr><tr><td class="bold">Vărsătura Braila Mall</td><td>Brăila</td><td>124</td><td>207</td><td>222</td><td>223</td><td>161</td><td>200</td><td>181</td><td>230</td><td>312</td><td>310</td><td class="tr">▼0.6%</td></tr><tr><td class="bold">Brasov Bartolomeu</td><td>Brașov</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>87</td><td>215</td><td>242</td><td>300</td><td class="tg">▲24.0%</td></tr><tr><td class="bold">Liberty Center</td><td>Bucharest</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>233</td><td class="tg">new</td></tr><tr><td class="bold">Mega Mall</td><td>Bucharest</td><td>267</td><td>452</td><td>374</td><td>296</td><td>203</td><td>385</td><td>232</td><td>255</td><td>299</td><td>206</td><td class="tr">▼31.1%</td></tr><tr><td class="bold">Iasi Moldova Mall</td><td>Iași</td><td>140</td><td>287</td><td>260</td><td>238</td><td>212</td><td>261</td><td>137</td><td>125</td><td>209</td><td>203</td><td class="tr">▼2.9%</td></tr><tr><td class="bold">Cosmopolis</td><td>Bucharest</td><td>—</td><td>—</td><td>83</td><td>137</td><td>130</td><td>133</td><td>159</td><td>188</td><td>179</td><td>154</td><td class="tr">▼14.0%</td></tr><tr><td class="bold">Promenada Mall</td><td>Bucharest</td><td>173</td><td>230</td><td>192</td><td>159</td><td>126</td><td>168</td><td>115</td><td>134</td><td>202</td><td>148</td><td class="tr">▼26.7%</td></tr><tr><td class="bold">Baneasa Mall</td><td>Bucharest</td><td>113</td><td>112</td><td>141</td><td>110</td><td>85</td><td>120</td><td>82</td><td>73</td><td>104</td><td>145</td><td class="tg">▲39.4%</td></tr><tr><td class="bold">Pitești Retail Park</td><td>Pitești</td><td>26</td><td>70</td><td>88</td><td>69</td><td>39</td><td>81</td><td>68</td><td>95</td><td>134</td><td>111</td><td class="tr">▼17.2%</td></tr>
       </tbody>
     </table>
@@ -749,7 +818,7 @@ tbody tr:hover{background:var(--bg)}
 <footer class="footer">
   Bolt Food Romania × Hesburger · Confidential report · January–October 2026<br>
   Account Management Team · Data: Bolt Looker (curated_delivery / fact_provider · incentives / sponsored listings)<br>
-  Generated on 12 November 2026
+  Generated on 13 November 2026
 </footer>
 
 <script>
