@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-12-ro-14-venues-v1"
+SCRIPT_VERSION = "2026-11-13-quarter-yoy-v1"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -671,16 +671,50 @@ def fetch_queries(session):
                 "compare": rows_to_locs(cmp_rows) if cmp_rows else [],
             }
             log(f"TD 1–{end_day} {mtd_label} vs 1–{cmp_end} {cur_label}: {len(mtd_rows)} rows")
+
+    prior_year = year - 1
+    monthly_prior = {}
+    for m in range(1, month + 1):
+        start, end, label = month_window(prior_year, m)
+        part = f"{start} to {end}"
+        try:
+            rows, endpoint = run_query(session, endpoint, location_body(part, label, "monthly"))
+        except RuntimeError as exc:
+            log(f"Prior-year {label}: {exc}")
+            rows = []
+        if rows:
+            guard_row_count(rows, f"{label} (YoY)")
+        monthly_prior[m] = rows_to_locs(rows) if rows else []
+        if rows:
+            log(f"YoY month {label}: {len(rows)} rows")
+    prior_ytd_part = f"{prior_year}/01/01 to {prior_year}/{month:02d}/{ytd_end_day:02d}"
+    prior_ytd_body = {
+        "model": "curated_delivery",
+        "view": "fact_provider",
+        "fields": YTD_FIELDS,
+        "filters": base_filters(prior_ytd_part),
+        "sorts": [F_MONTH],
+        "limit": "24",
+    }
+    try:
+        ytd_prior, endpoint = run_query(session, endpoint, prior_ytd_body)
+    except RuntimeError as exc:
+        log(f"Prior-year YTD: {exc}")
+        ytd_prior = []
+
     return {
         "today": today,
         "year": year,
         "month": month,
+        "prior_calendar_year": prior_year,
         "prev_year": prev_y,
         "prev_month": prev_m,
         "monthly": monthly,
+        "monthly_prior": monthly_prior,
         "current": monthly[month],
         "previous": monthly[month - 1] if month > 1 else [],
         "ytd": ytd,
+        "ytd_prior": ytd_prior,
         "mtd": mtd,
         "sl_current": sl_current,
         "sl_previous": sl_previous,
@@ -762,6 +796,34 @@ def ytd_by_month(rows, year, through_month):
     return series
 
 
+QUARTER_LABELS = ("Q1", "Q2", "Q3", "Q4")
+QUARTER_MONTH_SPANS = ((1, 3), (4, 6), (7, 9), (10, 12))
+
+
+def months_in_quarter(quarter, through_month):
+    start, end = QUARTER_MONTH_SPANS[quarter - 1]
+    return [m for m in range(start, end + 1) if m <= through_month]
+
+
+def quarter_label(quarter, through_month):
+    months = months_in_quarter(quarter, through_month)
+    if not months:
+        return QUARTER_LABELS[quarter - 1]
+    start, end = QUARTER_MONTH_SPANS[quarter - 1]
+    if len(months) == end - start + 1:
+        return QUARTER_LABELS[quarter - 1]
+    if len(months) == 1:
+        return f"{QUARTER_LABELS[quarter - 1]} ({MON[months[0] - 1]})"
+    return f"{QUARTER_LABELS[quarter - 1]} ({MON[months[0] - 1]}–{MON[months[-1] - 1]})"
+
+
+def chain_for_months(monthly, months):
+    locs = []
+    for m in months:
+        locs.extend(monthly.get(m) or [])
+    return chain(locs) if locs else finalize(blank_loc())
+
+
 def section_by_id(original, div_id, next_id):
     marker = f'id="{div_id}"'
     start = original.find(marker)
@@ -828,7 +890,19 @@ def time_cell(value, kind):
     return f"<td>{text}</td>"
 
 
-def hero_kpis(title_id, display, totals, compare, vs_label, ytd_delivered, ytd_gmv, ytd_label, locations):
+def hero_kpis(
+    title_id,
+    display,
+    totals,
+    compare,
+    vs_label,
+    ytd_delivered,
+    ytd_gmv,
+    ytd_label,
+    locations,
+    yoy=None,
+    yoy_year="",
+):
     delivered_l, delivered_c, _ = trend_text(totals["delivered"], compare["delivered"], "pct", True, vs_label)
     revenue_l, revenue_c, _ = trend_text(totals["gmv"], compare["gmv"], "pct", True, vs_label)
     aov_l, aov_c, _ = trend_text(totals["aov"], compare["aov"], "pct", True, vs_label)
@@ -841,6 +915,15 @@ def hero_kpis(title_id, display, totals, compare, vs_label, ytd_delivered, ytd_g
     aov = "—" if totals["aov"] is None else fmt_eur(totals["aov"], 2)
     rating = "—" if totals["rating"] is None else f"{totals['rating']:.2f} ★"
     hidden = "" if display else ' style="display:none"'
+    yoy_block = ""
+    if yoy and yoy_year and yoy.get("delivered", 0) > 0:
+        yd_l, yd_c, _ = trend_text(totals["delivered"], yoy["delivered"], "pct", True, yoy_year)
+        yg_l, yg_c, _ = trend_text(totals["gmv"], yoy["gmv"], "pct", True, "")
+        yoy_block = (
+            f'<div class="hero-kpi"><div class="hero-kpi-l">YoY delivered</div>'
+            f'<div class="hero-kpi-v">{esc(yd_l)}</div>'
+            f'<div class="hero-kpi-d {yd_c}">vs {esc(yoy_year)} · {esc(yg_l)} revenue</div></div>'
+        )
     return f"""
     <div class="hero-kpis" id="{title_id}"{hidden}>
       <div class="hero-kpi"><div class="hero-kpi-l">Delivered</div><div class="hero-kpi-v">{fmt_int(totals['delivered'])}</div><div class="hero-kpi-d {delivered_c}">{esc(delivered_l)}</div></div>
@@ -849,6 +932,7 @@ def hero_kpis(title_id, display, totals, compare, vs_label, ytd_delivered, ytd_g
       <div class="hero-kpi"><div class="hero-kpi-l">Promo share</div><div class="hero-kpi-v">{promo}</div><div class="hero-kpi-d {promo_c}">{esc(promo_l)}</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">Chain rating</div><div class="hero-kpi-v">{rating}</div><div class="hero-kpi-d {rate_c}">{esc(rate_l)}</div></div>
       <div class="hero-kpi"><div class="hero-kpi-l">YTD {esc(ytd_label)}</div><div class="hero-kpi-v">{fmt_int(ytd_delivered)}</div><div class="hero-kpi-d neu">{fmt_eur(ytd_gmv)}</div></div>
+      {yoy_block}
     </div>"""
 
 
@@ -1090,6 +1174,23 @@ def build_html(original, data):
     ytd_fail = sum(item["failed"] for item in series)
     ytd_through_prev = sum(item["delivered"] for item in series[:prev_m])
     ytd_gmv_prev = sum(item["gmv"] for item in series[:prev_m])
+    prior_year = data.get("prior_calendar_year", year - 1)
+    monthly_prior = data.get("monthly_prior") or {}
+    series_prior = ytd_by_month(data.get("ytd_prior") or [], prior_year, month)
+    ytd_prior_del = sum(item["delivered"] for item in series_prior)
+    ytd_prior_gmv = sum(item["gmv"] for item in series_prior)
+    yoy_year = str(prior_year)
+    ytd_yoy_l, _, ytd_yoy_card = (
+        trend_text(ytd_del, ytd_prior_del, "pct", True, yoy_year)
+        if ytd_prior_del > 0
+        else ("—", "neu", "kneu")
+    )
+    cur_prior_chain = chain(monthly_prior.get(month) or [])
+    month_yoy_l, _, month_yoy_card = (
+        trend_text(cur_chain["delivered"], cur_prior_chain["delivered"], "pct", True, yoy_year)
+        if cur_prior_chain["delivered"] > 0
+        else ("—", "neu", "kneu")
+    )
 
     prev_for_hero = {
         "delivered": prev_chain["delivered"],
@@ -1190,6 +1291,41 @@ def build_html(original, data):
         + chain_mom_cell
         + "</tr>"
     )
+    prior_chain_cells = []
+    for m in range(1, month + 1):
+        pri = series_prior[m - 1]["delivered"] if m - 1 < len(series_prior) else 0
+        prior_chain_cells.append("—" if pri <= 0 else fmt_int(pri))
+    chain_prior_row = (
+        "<tr>"
+        f'<td class="bold">Chain total {prior_year}</td><td>—</td>'
+        + "".join(f"<td>{cell}</td>" for cell in prior_chain_cells)
+        + (mom_td(series[-1]["delivered"], series_prior[-1]["delivered"]) if series_prior[-1]["delivered"] > 0 else "<td>—</td>")
+        + "</tr>"
+    )
+    quarter_summary_rows = []
+    for q in range(1, 5):
+        q_months = months_in_quarter(q, month)
+        if not q_months:
+            continue
+        q_cur = chain_for_months(monthly, q_months)
+        q_pri = chain_for_months(monthly_prior, q_months)
+        q_lbl = quarter_label(q, month)
+        span = f"{MON[q_months[0] - 1]}–{MON[q_months[-1] - 1]} {year}"
+        if q_pri["delivered"] > 0:
+            q_yoy_l, _, _ = trend_text(q_cur["delivered"], q_pri["delivered"], "pct", True, yoy_year)
+            pri_del = fmt_int(q_pri["delivered"])
+        else:
+            q_yoy_l = "—"
+            pri_del = "—"
+        quarter_summary_rows.append(
+            "<tr>"
+            f'<td class="bold">{esc(q_lbl)}</td><td>{esc(span)}</td>'
+            f"<td>{pri_del}</td>"
+            f'<td class="bold">{fmt_int(q_cur["delivered"])}</td>'
+            f'<td class="bold">{fmt_eur(q_cur["gmv"])}</td>'
+            f"<td>{esc(q_yoy_l)}</td>"
+            "</tr>"
+        )
 
     fail_pairs = []
     for cur, prev in paired:
@@ -1577,6 +1713,7 @@ def build_html(original, data):
         ytd_g = sum(item["gmv"] for item in series[:m])
         ytd_lab = f"Jan–{MON[m - 1]}"
         is_active = m == month
+        yoy_m = chain(monthly_prior.get(m) or [])
         hero_kpi_blocks.append(
             hero_kpis(
                 f"h-{tab_id}",
@@ -1588,6 +1725,8 @@ def build_html(original, data):
                 ytd_g,
                 ytd_lab,
                 active_n,
+                yoy=yoy_m if yoy_m.get("delivered", 0) > 0 else None,
+                yoy_year=yoy_year,
             )
         )
         active_cls = " active" if is_active else ""
@@ -1601,6 +1740,58 @@ def build_html(original, data):
         )
     hero_tabs_html = "\n      ".join(hero_tab_buttons)
     hero_blocks_html = "".join(hero_kpi_blocks)
+    quarter_buttons = []
+    quarter_blocks = []
+    for q in range(1, 5):
+        q_months = months_in_quarter(q, month)
+        if not q_months:
+            continue
+        q_id = f"q{q}"
+        q_chain = chain_for_months(monthly, q_months)
+        if q > 1:
+            prev_q_months = months_in_quarter(q - 1, month)
+            q_compare = chain_for_months(monthly, prev_q_months) if prev_q_months else empty_compare
+            q_vs = QUARTER_LABELS[q - 2]
+        else:
+            q_compare = empty_compare
+            q_vs = ""
+        q_ytd_d = sum(series[m - 1]["delivered"] for m in q_months)
+        q_ytd_g = sum(series[m - 1]["gmv"] for m in q_months)
+        q_ytd_lab = f"{MON[q_months[0] - 1]}–{MON[q_months[-1] - 1]}"
+        q_yoy = chain_for_months(monthly_prior, q_months)
+        quarter_blocks.append(
+            hero_kpis(
+                f"h-{q_id}",
+                False,
+                q_chain,
+                q_compare,
+                q_vs,
+                q_ytd_d,
+                q_ytd_g,
+                q_ytd_lab,
+                active_n,
+                yoy=q_yoy if q_yoy.get("delivered", 0) > 0 else None,
+                yoy_year=yoy_year,
+            )
+        )
+        quarter_buttons.append(
+            '<button class="tab tab-quarter" onclick="showMonth(\''
+            + q_id
+            + "')\">"
+            + quarter_label(q, month)
+            + f" {year}</button>"
+        )
+    quarter_tabs_html = ""
+    if quarter_buttons:
+        quarter_tabs_html = (
+            '<p class="tab-legend">Quarters — tap for 3-month chain totals (vs prior quarter &amp; '
+            + esc(yoy_year)
+            + ")</p>\n"
+            '    <div class="tab-bar tab-bar-quarters">\n      '
+            + "\n      ".join(quarter_buttons)
+            + "\n    </div>"
+        )
+    hero_blocks_html += "".join(quarter_blocks)
     hero_mtd = ""
     mtd_button = ""
     mtd = data.get("mtd")
@@ -1624,6 +1815,14 @@ def build_html(original, data):
         styles = styles.replace(
             ".tab-bar{display:flex;gap:4px;margin-bottom:28px}",
             ".tab-bar{display:flex;flex-wrap:nowrap;gap:4px;margin-bottom:28px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}",
+        )
+    if ".tab-legend" not in styles:
+        styles = styles.replace(
+            "</style>",
+            ".tab-legend{font-size:11px;color:var(--ink-l);margin:16px 0 6px;font-weight:500}"
+            ".tab-bar-quarters{margin-bottom:24px}"
+            ".tab-quarter{min-width:4.5rem}"
+            "</style>",
         )
 
     page = f"""<!DOCTYPE html>
@@ -1663,6 +1862,7 @@ def build_html(original, data):
       {hero_tabs_html}
       {mtd_button}
     </div>
+    {quarter_tabs_html}
     {hero_blocks_html}
     {hero_mtd}
   </div>
@@ -1680,6 +1880,20 @@ def build_html(original, data):
     {card(f"Fail rate {prev_ab} / {cur_ab}", f"{fail_prev:.1f}% / {fail_now:.1f}%", fail_l, fail_card)}
     {card(f"Bolt+ share {prev_ab} / {cur_ab}", f"{plus_prev:.1f}% / {plus_now:.1f}%", f"{fmt_int(prev_chain['bolt_plus'])} → {fmt_int(cur_chain['bolt_plus'])}", "kneu")}
     {card(f"YTD delivered {ytd_cur_label}", fmt_int(ytd_del), f"{fmt_eur(ytd_gmv)} YTD", "kneu")}
+    {card(f"YTD YoY vs {prior_year}", fmt_int(ytd_prior_del) if ytd_prior_del else "—", ytd_yoy_l, ytd_yoy_card)}
+    {card(f"{cur_ab} YoY vs {prior_year}", fmt_int(cur_prior_chain["delivered"]) if cur_prior_chain["delivered"] else "—", month_yoy_l, month_yoy_card)}
+  </div>
+  <p class="sec-sub" style="margin-top:22px">Quarter totals — {year} vs {prior_year}</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Quarter</th><th>Months</th>
+        <th>Delivered {prior_year}</th><th>Delivered {year}</th><th>Revenue {year}</th><th>YoY</th>
+      </tr></thead>
+      <tbody>
+        {''.join(quarter_summary_rows)}
+      </tbody>
+    </table>
   </div>
   <p class="sec-sub" style="margin-top:22px">Delivered orders by month — full {year} history per location</p>
   <div class="tbl-wrap">
@@ -1691,6 +1905,7 @@ def build_html(original, data):
       </tr></thead>
       <tbody>
         {chain_history_row}
+        {chain_prior_row if ytd_prior_del else ""}
         {''.join(history_delivered_rows)}
       </tbody>
     </table>
