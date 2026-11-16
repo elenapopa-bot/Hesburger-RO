@@ -3,6 +3,7 @@
 
 import calendar
 import html
+import json
 import os
 import re
 import traceback
@@ -20,7 +21,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-16-q3-users-v4-order-based"
+SCRIPT_VERSION = "2026-11-16-q3-users-v5-cache"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -461,15 +462,74 @@ def quarter_partition(year, quarter):
     return part, f"Q{quarter} {year} ({span})"
 
 
+Q3_CACHE_NAME = "q3_user_metrics.json"
+Q3_CACHE_URL = "https://raw.githubusercontent.com/{}/main/scripts/{}".format(REPO_NAME, Q3_CACHE_NAME)
+
+
+def load_q3_user_cache(year, quarter):
+    """Order-based Q3 counts maintained in-repo (no Databricks on the Mac)."""
+    paths = [
+        SCRIPT_DIR / Q3_CACHE_NAME,
+        REPO_TEMPLATE_FILE.parent / Q3_CACHE_NAME,
+        Path.home() / "scripts" / Q3_CACHE_NAME,
+    ]
+    for path in paths:
+        if path.is_file():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                log(f"Q3 cache {path}: {exc}")
+                continue
+            if data.get("year") == year and data.get("quarter") == quarter:
+                log(f"Q3 user metrics from {path}")
+                return data
+    try:
+        response = requests.get(Q3_CACHE_URL, timeout=45)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("year") == year and data.get("quarter") == quarter:
+                log(f"Q3 user metrics from GitHub ({Q3_CACHE_URL})")
+                return data
+    except (requests.RequestException, json.JSONDecodeError, ValueError) as exc:
+        log(f"Q3 cache download: {exc}")
+    return None
+
+
+def q3_payload_from_cache(data):
+    label = data.get("label") or "Q3 {}".format(data.get("year"))
+    return {
+        "quarter": data["quarter"],
+        "year": data["year"],
+        "label": label,
+        "active": float(data["active_users"]),
+        "new": float(data["new_to_brand_users"]),
+        "source": "orders",
+        "new_note": data.get(
+            "definition_new", "First Hesburger brand order in quarter (distinct eaters)"
+        ),
+    }
+
+
 def fetch_chain_user_metrics(session, endpoint, year, quarter):
     """Chain active/new eaters for one quarter.
 
-    Preferred: order-based counts from Databricks (see scripts/hesburger_q3_user_metrics.sql)
-    via HESBURGER_Q3_ACTIVE_USERS and HESBURGER_Q3_NEW_USERS in ~/.hesburger_ro_env.
-
-    Fallback: Looker brand quarterly (often under-counts vs distinct user_id on orders).
+    Preferred: scripts/q3_user_metrics.json (downloaded from GitHub if missing locally).
+    Optional override: HESBURGER_Q3_* in ~/.hesburger_ro_env.
+    Fallback: Looker (not used for partner Q3 figures when cache matches).
     """
     part, label = quarter_partition(year, quarter)
+    cache = load_q3_user_cache(year, quarter)
+    if cache:
+        active = cache.get("active_users")
+        new = cache.get("new_to_brand_users")
+        log(
+            f"{label} — active customers (order-based distinct user_id): {active:,}, "
+            f"new customers (first Hesburger order in quarter): {new:,} "
+            f"(cache {cache.get('generated_at_utc', '')})"
+        )
+        payload = q3_payload_from_cache(cache)
+        return payload, endpoint
+
     env_active = os.environ.get("HESBURGER_Q3_ACTIVE_USERS", "").strip()
     env_new = os.environ.get("HESBURGER_Q3_NEW_USERS", "").strip()
     if quarter == 3 and env_active.isdigit() and env_new.isdigit():

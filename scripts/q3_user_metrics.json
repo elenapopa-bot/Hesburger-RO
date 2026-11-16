@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "year": 2026,
+  "quarter": 3,
+  "label": "Q3 2026 (Jul–Sep 2026)",
+  "active_users": 5958,
+  "new_to_brand_users": 3964,
+  "delivered_orders": 11097,
+  "definition_active": "Distinct user_id with at least one delivered order, Jul–Sep, deduplicated across the quarter",
+  "definition_new": "Distinct user_id whose first Hesburger brand order (is_first_brand_order) occurred in the quarter",
+  "source_table": "main.ng_delivery.dim_order_delivery",
+  "provider_ids": [
+    135579, 135580, 135581, 135582, 135583,
+    154770, 154778, 155192, 170143, 172927, 173425,
+    190389, 802700, 4522627
+  ],
+  "generated_at_utc": "2026-11-16",
+  "monthly_uniques": [
+    { "month": "2026-07", "active_users": 1975, "new_to_brand_users": 1018 },
+    { "month": "2026-08", "active_users": 2472, "new_to_brand_users": 1287 },
+    { "month": "2026-09", "active_users": 3109, "new_to_brand_users": 1659 }
+  ]
+}
