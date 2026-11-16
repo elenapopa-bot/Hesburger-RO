@@ -16,14 +16,7 @@ Pulls metrics from Looker (Chrome session cookies) and publishes `index.html` to
    export GITHUB_TOKEN="ghp_..."
    ```
 
-   **Q3 active / new customers (for partner asks):** Looker brand KPIs can disagree with real headcount. Run `scripts/hesburger_q3_user_metrics.sql` in **Databricks SQL**, then add:
-
-   ```bash
-   export HESBURGER_Q3_ACTIVE_USERS=<active_users_q3 from SQL>
-   export HESBURGER_Q3_NEW_USERS=<new_to_brand_q3 from SQL>
-   ```
-
-   Re-run the update script — the report uses these instead of Looker for customer growth.
+   **Q3 active / new customers:** The updater loads `scripts/q3_user_metrics.json` from the repo (auto-download from GitHub when you run the script). No Databricks on your Mac. Optional override: `HESBURGER_Q3_ACTIVE_USERS` / `HESBURGER_Q3_NEW_USERS` in `~/.hesburger_ro_env`.
 
 3. **Layout template** (CSS + static sections: dishes, refunds):
 
