@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-16-q3-users-v1"
+SCRIPT_VERSION = "2026-11-16-q3-users-v2"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -428,6 +428,7 @@ def base_filters(partition, grain="monthly", entity="provider"):
 F_BRAND = "dim_provider_common.brand_name"
 F_NON_ADD_KEY = "fact_provider_non_additive.non_additive_key"
 F_USER_NEW_BRAND = "fact_additive.users_activated_brand_count"
+F_USER_NEW_PROVIDER = "fact_additive.users_activated_provider_count"
 F_USER_ACTIVE = "fact_provider_non_additive.provider_deliveries_unique_user_count"
 
 
@@ -441,50 +442,69 @@ def quarter_partition(year, quarter):
 
 
 def fetch_chain_user_metrics(session, endpoint, year, quarter):
-    """Unique active eaters and new-to-brand eaters for one calendar quarter (RO chain)."""
+    """Unique active eaters and new-to-Hesburger eaters for one quarter (RO provider_id set only)."""
     part, label = quarter_partition(year, quarter)
-    fields = [F_BRAND, F_NON_ADD_KEY, F_USER_NEW_BRAND, F_USER_ACTIVE]
-    for grain in ("quarterly", "monthly"):
-        body = {
-            "model": "curated_delivery",
-            "view": "fact_provider",
-            "fields": fields,
-            "filters": base_filters(part, grain, entity="brand"),
-            "limit": "10",
-        }
-        try:
-            rows, endpoint = run_query(session, endpoint, body)
-        except RuntimeError as exc:
-            log(f"{label} user metrics ({grain}): {exc}")
-            continue
-        if not rows:
-            log(f"{label} user metrics ({grain}): empty")
-            continue
-        active = new = None
-        for row in rows:
+    active = None
+
+    # Active: deduped eaters at chain grain (non-additive; quarterly only).
+    active_body = {
+        "model": "curated_delivery",
+        "view": "fact_provider",
+        "fields": [F_BRAND, F_NON_ADD_KEY, F_USER_ACTIVE],
+        "filters": base_filters(part, "quarterly", entity="brand"),
+        "limit": "50",
+    }
+    try:
+        rows, endpoint = run_query(session, endpoint, active_body)
+        for row in rows or []:
             a = num(row.get(F_USER_ACTIVE))
-            n = n0(row.get(F_USER_NEW_BRAND))
             if a is not None:
                 active = a if active is None else max(active, a)
-            new = (new or 0) + n
-        if grain == "monthly" and len(rows) > 1:
-            log(
-                f"{label} user metrics: summed {len(rows)} monthly new-user rows; "
-                "active users use max monthly non-additive (chain dedupe is at brand/quarterly when available)"
-            )
+    except RuntimeError as exc:
+        log(f"{label} active users: {exc}")
+
+    # New: first Hesburger order at a Romania venue — sum per-provider activations (scoped IDs).
+    new_body = {
+        "model": "curated_delivery",
+        "view": "fact_provider",
+        "fields": [F_PROVIDER_ID, F_USER_NEW_PROVIDER],
+        "filters": base_filters(part, "quarterly", entity="provider"),
+        "sorts": [F_USER_NEW_PROVIDER + " desc"],
+        "limit": "50",
+    }
+    new = None
+    try:
+        rows, endpoint = run_query(session, endpoint, new_body)
+        guard_row_count(rows, f"{label} new users")
+        if rows:
+            new = sum(n0(row.get(F_USER_NEW_PROVIDER)) for row in rows)
+    except RuntimeError as exc:
+        log(f"{label} new users (provider): {exc}")
+
+    if new is None or active is None:
+        log(f"{label} user metrics: incomplete (active={active}, new={new})")
+        if active is None and new is None:
+            return None, endpoint
+
+    if new is not None and active is not None and new > active:
         log(
-            f"{label} — active customers (unique deliveries): "
-            f"{fmt_int(active) if active is not None else '—'}, "
-            f"new customers (first Hesburger order): {fmt_int(new or 0)}"
+            f"{label} user metrics note: new ({new:.0f}) > active ({active:.0f}) — "
+            "new = sum of first-time orders per venue; active = unique eaters chain-wide"
         )
-        return {
-            "quarter": quarter,
-            "year": year,
-            "label": label,
-            "active": active,
-            "new": new,
-        }, endpoint
-    return None, endpoint
+
+    log(
+        f"{label} — active customers (unique deliveries): "
+        f"{fmt_int(active) if active is not None else '—'}, "
+        f"new customers (first order at any RO Hesburger): {fmt_int(new or 0)}"
+    )
+    return {
+        "quarter": quarter,
+        "year": year,
+        "label": label,
+        "active": active,
+        "new": new,
+        "new_note": "first delivered order at any listed Romania venue in the quarter",
+    }, endpoint
 
 
 def guard_row_count(rows, label):
@@ -1900,7 +1920,7 @@ def build_html(original, data):
             f'  <p class="sec-sub" style="margin-top:22px">Customer growth — {esc(q3["label"])}</p>\n'
             f'  <div class="kpi-row" id="customer-growth">\n'
             f'    {card("Active customers", q3_active, "Unique eaters with ≥1 delivered order", "kneu")}\n'
-            f'    {card("New customers", q3_new, "First-ever Hesburger delivery in period", "kup")}\n'
+            f'    {card("New customers", q3_new, esc(q3.get("new_note", "First order at any RO venue in period")), "kup")}\n'
             f"  </div>\n"
             f'  <p style="font-size:11px;color:var(--ink-l);margin-top:6px">'
             "Bolt Looker · Hesburger Romania (14 venues) · brand-level chain metrics.</p>\n"
