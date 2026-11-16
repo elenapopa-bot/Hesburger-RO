@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-16-q3-users-v3"
+SCRIPT_VERSION = "2026-11-16-q3-users-v4-order-based"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -157,7 +157,27 @@ def log(msg):
         fh.write(line + "\n")
 
 
+def load_env_exports():
+    """Load export KEY=value lines from ~/.hesburger_ro_env into os.environ (if not already set)."""
+    if not ENV_FILE.exists():
+        return
+    for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        text = line.strip()
+        if not text or text.startswith("#"):
+            continue
+        if text.startswith("export "):
+            text = text[7:].strip()
+        if "=" not in text:
+            continue
+        key, _, val = text.partition("=")
+        key = key.strip()
+        val = val.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = val
+
+
 def load_token():
+    load_env_exports()
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     if token:
         return token
@@ -442,8 +462,35 @@ def quarter_partition(year, quarter):
 
 
 def fetch_chain_user_metrics(session, endpoint, year, quarter):
-    """Unique active + new-to-Hesburger eaters (RO provider_id set). Same query grain for both."""
+    """Chain active/new eaters for one quarter.
+
+    Preferred: order-based counts from Databricks (see scripts/hesburger_q3_user_metrics.sql)
+    via HESBURGER_Q3_ACTIVE_USERS and HESBURGER_Q3_NEW_USERS in ~/.hesburger_ro_env.
+
+    Fallback: Looker brand quarterly (often under-counts vs distinct user_id on orders).
+    """
     part, label = quarter_partition(year, quarter)
+    env_active = os.environ.get("HESBURGER_Q3_ACTIVE_USERS", "").strip()
+    env_new = os.environ.get("HESBURGER_Q3_NEW_USERS", "").strip()
+    if quarter == 3 and env_active.isdigit() and env_new.isdigit():
+        active, new = int(env_active), int(env_new)
+        log(
+            f"{label} — active customers (order-based distinct user_id): {active:,}, "
+            f"new customers (first Hesburger order in quarter): {new:,}"
+        )
+        return {
+            "quarter": quarter,
+            "year": year,
+            "label": label,
+            "active": float(active),
+            "new": float(new),
+            "source": "orders",
+            "new_note": (
+                "Distinct eater/user_id on delivered orders (Jul–Sep), 14 RO venues — "
+                "from Databricks SQL; set HESBURGER_Q3_* in ~/.hesburger_ro_env"
+            ),
+        }, endpoint
+
     active = new = None
     f_dyn = "fact_provider_non_additive.dynamic_timeframe"
 
@@ -519,10 +566,11 @@ def fetch_chain_user_metrics(session, endpoint, year, quarter):
         "label": label,
         "active": active,
         "new": new,
+        "source": "looker",
         "new_note": (
             "First Hesburger delivery on Bolt Food in the quarter (chain unique; RO venues)"
             if new is not None
-            else "Pending validation — active users are reliable"
+            else "Run scripts/hesburger_q3_user_metrics.sql and set HESBURGER_Q3_* in ~/.hesburger_ro_env"
         ),
     }, endpoint
 
@@ -1943,7 +1991,12 @@ def build_html(original, data):
             f'    {card("New customers", q3_new, esc(q3.get("new_note", "First order at any RO venue in period")), "kup")}\n'
             f"  </div>\n"
             f'  <p style="font-size:11px;color:var(--ink-l);margin-top:6px">'
-            "Bolt Looker · Hesburger Romania (14 venues) · brand-level chain metrics.</p>\n"
+            + esc(
+                "Bolt "
+                + ("order data (distinct user_id)" if q3.get("source") == "orders" else "Looker — verify with SQL if needed")
+                + " · Hesburger Romania · 14 venues."
+            )
+            + "</p>\n"
         )
     else:
         q3_users_html = ""
