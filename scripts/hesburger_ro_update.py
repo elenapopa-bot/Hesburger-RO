@@ -20,7 +20,7 @@ PUBLIC_QUERY = LOOKER_HOST + "/api/4.0/queries/run/json"
 INTERNAL_QUERY = LOOKER_HOST + "/api/internal/core/4.0/queries/run/json"
 REPO_NAME = "elenapopa-bot/Hesburger-RO"
 # Bump when publishing script fixes (check: grep SCRIPT_VERSION ~/scripts/hesburger_ro_update.py)
-SCRIPT_VERSION = "2026-11-16-q3-users-v2"
+SCRIPT_VERSION = "2026-11-16-q3-users-v3"
 ENV_FILE = Path.home() / ".hesburger_ro_env"
 LOG_FILE = Path.home() / "scripts" / "hesburger_ro.log"
 # Partner-approved layout (Claude artifact). CSS and static sections always come from here.
@@ -442,60 +442,76 @@ def quarter_partition(year, quarter):
 
 
 def fetch_chain_user_metrics(session, endpoint, year, quarter):
-    """Unique active eaters and new-to-Hesburger eaters for one quarter (RO provider_id set only)."""
+    """Unique active + new-to-Hesburger eaters (RO provider_id set). Same query grain for both."""
     part, label = quarter_partition(year, quarter)
-    active = None
+    active = new = None
+    f_dyn = "fact_provider_non_additive.dynamic_timeframe"
 
-    # Active: deduped eaters at chain grain (non-additive; quarterly only).
-    active_body = {
+    chain_body = {
         "model": "curated_delivery",
         "view": "fact_provider",
-        "fields": [F_BRAND, F_NON_ADD_KEY, F_USER_ACTIVE],
+        "fields": [f_dyn, F_BRAND, F_NON_ADD_KEY, F_USER_ACTIVE, F_USER_NEW_BRAND],
         "filters": base_filters(part, "quarterly", entity="brand"),
-        "limit": "50",
+        "limit": "20",
     }
     try:
-        rows, endpoint = run_query(session, endpoint, active_body)
+        rows, endpoint = run_query(session, endpoint, chain_body)
+        brand_news = []
         for row in rows or []:
             a = num(row.get(F_USER_ACTIVE))
+            n = n0(row.get(F_USER_NEW_BRAND))
             if a is not None:
                 active = a if active is None else max(active, a)
+            if n:
+                brand_news.append(n)
+        if len(brand_news) == 1:
+            new = brand_news[0]
+        elif len(brand_news) > 1:
+            log(f"{label} brand new-user rows: {brand_news} (using minimum — never sum)")
+            new = min(brand_news)
     except RuntimeError as exc:
-        log(f"{label} active users: {exc}")
+        log(f"{label} chain user metrics (brand quarterly): {exc}")
 
-    # New: first Hesburger order at a Romania venue — sum per-provider activations (scoped IDs).
-    new_body = {
-        "model": "curated_delivery",
-        "view": "fact_provider",
-        "fields": [F_PROVIDER_ID, F_USER_NEW_PROVIDER],
-        "filters": base_filters(part, "quarterly", entity="provider"),
-        "sorts": [F_USER_NEW_PROVIDER + " desc"],
-        "limit": "50",
-    }
-    new = None
-    try:
-        rows, endpoint = run_query(session, endpoint, new_body)
-        guard_row_count(rows, f"{label} new users")
-        if rows:
-            new = sum(n0(row.get(F_USER_NEW_PROVIDER)) for row in rows)
-    except RuntimeError as exc:
-        log(f"{label} new users (provider): {exc}")
-
-    if new is None or active is None:
-        log(f"{label} user metrics: incomplete (active={active}, new={new})")
-        if active is None and new is None:
-            return None, endpoint
+    if new is not None and active is not None and new > active:
+        by_pid = {}
+        prov_body = {
+            "model": "curated_delivery",
+            "view": "fact_provider",
+            "fields": [F_PROVIDER_ID, F_USER_NEW_PROVIDER],
+            "filters": base_filters(part, "quarterly", entity="provider"),
+            "limit": "50",
+        }
+        try:
+            prow, endpoint = run_query(session, endpoint, prov_body)
+            guard_row_count(prow, f"{label} new users verify")
+            for row in prow or []:
+                raw = row.get(F_PROVIDER_ID)
+                if raw in (None, ""):
+                    continue
+                pid = str(int(float(raw)))
+                by_pid[pid] = max(by_pid.get(pid, 0), n0(row.get(F_USER_NEW_PROVIDER)))
+            prov_sum = sum(by_pid.values())
+            log(f"{label} provider new-user deduped sum ({len(by_pid)} venues): {prov_sum}")
+            if prov_sum <= active:
+                new = prov_sum
+        except RuntimeError as exc:
+            log(f"{label} provider new-user verify: {exc}")
 
     if new is not None and active is not None and new > active:
         log(
-            f"{label} user metrics note: new ({new:.0f}) > active ({active:.0f}) — "
-            "new = sum of first-time orders per venue; active = unique eaters chain-wide"
+            f"{label} suppressing unreliable new-user count ({new:.0f} > active {active:.0f}); "
+            "report shows active only — align with Bolt AM / Looker brand explore"
         )
+        new = None
 
+    if active is None and new is None:
+        return None, endpoint
+
+    new_txt = fmt_int(new) if new is not None else "— (pending validation)"
     log(
         f"{label} — active customers (unique deliveries): "
         f"{fmt_int(active) if active is not None else '—'}, "
-        f"new customers (first order at any RO Hesburger): {fmt_int(new or 0)}"
+        f"new customers (first Hesburger on Bolt in quarter): {new_txt}"
     )
     return {
         "quarter": quarter,
@@ -503,7 +519,11 @@ def fetch_chain_user_metrics(session, endpoint, year, quarter):
         "label": label,
         "active": active,
         "new": new,
-        "new_note": "first delivered order at any listed Romania venue in the quarter",
+        "new_note": (
+            "First Hesburger delivery on Bolt Food in the quarter (chain unique; RO venues)"
+            if new is not None
+            else "Pending validation — active users are reliable"
+        ),
     }, endpoint
 
 
@@ -1913,7 +1933,7 @@ def build_html(original, data):
         )
 
     q3 = data.get("q3_users")
-    if q3 and (q3.get("active") is not None or q3.get("new")):
+    if q3 and q3.get("active") is not None:
         q3_active = fmt_int(q3["active"]) if q3.get("active") is not None else "—"
         q3_new = fmt_int(q3["new"]) if q3.get("new") is not None else "—"
         q3_users_html = (
